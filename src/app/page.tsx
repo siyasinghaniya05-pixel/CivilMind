@@ -16,15 +16,17 @@ import { ImpactAnalytics } from '@/components/modules/ImpactAnalytics';
 import { ReportGenerator } from '@/components/modules/ReportGenerator';
 import { AdminPanel } from '@/components/modules/AdminPanel';
 import { AiAgentsHub } from '@/components/modules/AiAgentsHub';
+import { MultiTenantDashboard } from '@/components/modules/MultiTenantDashboard';
 import { WhatShouldWeBuildNext } from '@/components/wow/WhatShouldWeBuildNext';
 import { BudgetSimulator } from '@/components/wow/BudgetSimulator';
 import { DigitalTwinView } from '@/components/wow/DigitalTwinView';
 import { CitizenImpactCalculator } from '@/components/wow/CitizenImpactCalculator';
 import { AnnualDevelopmentPlan } from '@/components/wow/AnnualDevelopmentPlan';
 import { NewProjectModal } from '@/components/modals/NewProjectModal';
+import { CitySelectorModal } from '@/components/common/CitySelectorModal';
 
 export default function HomePage() {
-  const { activeTab } = useCivic();
+  const { activeTab, isCityModalOpen, setIsCityModalOpen } = useCivic();
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
 
   const renderActiveModule = () => {
@@ -53,6 +55,8 @@ export default function HomePage() {
         return <AdminPanel />;
       case 'ai-agents-hub':
         return <AiAgentsHub />;
+      case 'multi-tenant':
+        return <MultiTenantDashboard />;
       case 'wow-build-next':
         return <WhatShouldWeBuildNext />;
       case 'wow-simulator':
@@ -86,6 +90,12 @@ export default function HomePage() {
       <NewProjectModal
         isOpen={isNewProjectModalOpen}
         onClose={() => setIsNewProjectModalOpen(false)}
+      />
+
+      {/* Pan-India City Discovery & Selector Modal */}
+      <CitySelectorModal
+        isOpen={isCityModalOpen}
+        onClose={() => setIsCityModalOpen(false)}
       />
     </div>
   );

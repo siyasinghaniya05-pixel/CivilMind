@@ -18,7 +18,9 @@ import {
   Sliders, 
   Boxes, 
   Users, 
-  CalendarRange
+  CalendarRange,
+  Globe2,
+  Building
 } from 'lucide-react';
 
 interface NavItem {
@@ -30,7 +32,7 @@ interface NavItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { activeTab, setActiveTab, risks, aiRecommendations } = useCivic();
+  const { activeTab, setActiveTab, risks, aiRecommendations, currentCity, setIsCityModalOpen } = useCivic();
 
   const criticalRisks = risks.filter(r => r.severity === 'Critical').length;
   const pendingRecs = aiRecommendations.filter(r => r.status === 'Pending Council Review').length;
@@ -39,17 +41,18 @@ export const Sidebar: React.FC = () => {
     {
       title: 'COMMAND CENTER',
       items: [
-        { id: 'overview', label: 'Executive Dashboard', icon: LayoutDashboard },
-        { id: 'ai-agents-hub', label: '5 AI Agents Hub', badge: 'Active', badgeColor: 'bg-emerald-500 text-white', icon: Bot },
+        { id: 'overview', label: 'City Executive Dashboard', icon: LayoutDashboard },
+        { id: 'multi-tenant', label: 'District & State Monitor', badge: 'Multi-ULB', badgeColor: 'bg-indigo-600 text-white', icon: Globe2 },
+        { id: 'ai-agents-hub', label: '7 AI Agents Suite', badge: 'Active', badgeColor: 'bg-emerald-500 text-white', icon: Bot },
       ]
     },
     {
       title: 'INTELLIGENCE ENGINES',
       items: [
-        { id: 'priority-engine', label: '1. Priority Engine', badge: 'MCDA', badgeColor: 'bg-blue-600 text-white', icon: ArrowUpNarrowWide },
+        { id: 'priority-engine', label: '1. Priority Engine (MCDA)', badge: 'Ranked', badgeColor: 'bg-blue-600 text-white', icon: ArrowUpNarrowWide },
         { id: 'budget-optimizer', label: '2. Budget Optimizer', icon: Calculator },
-        { id: 'ward-index', label: '3. Ward Index (WDI)', badge: '17 Wards', badgeColor: 'bg-indigo-600 text-white', icon: MapPin },
-        { id: 'risk-prediction', label: '4. Risk Prediction', badge: criticalRisks > 0 ? `${criticalRisks} Alert` : undefined, badgeColor: 'bg-red-600 text-white', icon: AlertTriangle },
+        { id: 'ward-index', label: '3. Ward Index (WDI)', badge: `${currentCity.totalWards} Wards`, badgeColor: 'bg-indigo-600 text-white', icon: MapPin },
+        { id: 'risk-prediction', label: '4. Risk & Heatmaps', badge: criticalRisks > 0 ? `${criticalRisks} Alert` : undefined, badgeColor: 'bg-red-600 text-white', icon: AlertTriangle },
         { id: 'smart-map', label: '5. GIS Smart City Map', badge: 'OSM', badgeColor: 'bg-emerald-600 text-white', icon: Map },
       ]
     },
@@ -70,7 +73,7 @@ export const Sidebar: React.FC = () => {
         { id: 'wow-simulator', label: 'Budget Simulator', icon: Sliders },
         { id: 'wow-digital-twin', label: 'Digital Twin View', icon: Boxes },
         { id: 'wow-calculator', label: 'Citizen Impact Calc', icon: Users },
-        { id: 'wow-adp', label: 'Annual Dev Plan (ADP)', icon: CalendarRange },
+        { id: 'wow-adp', label: 'Multi-Year Plan (1-3-5)', icon: CalendarRange },
       ]
     }
   ];
@@ -78,6 +81,22 @@ export const Sidebar: React.FC = () => {
   return (
     <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 backdrop-blur min-h-[calc(100vh-4rem)] p-3 flex flex-col justify-between overflow-y-auto">
       <div className="space-y-6">
+        {/* City Quick Switcher Tile */}
+        <button
+          onClick={() => setIsCityModalOpen(true)}
+          className="w-full p-2.5 rounded-xl border border-blue-200 dark:border-blue-900 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 text-left hover:border-blue-400 transition-all flex items-center justify-between"
+        >
+          <div className="truncate">
+            <span className="text-[10px] font-bold text-blue-700 dark:text-blue-300 uppercase block">Selected ULB</span>
+            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+              {currentCity.cityName} {currentCity.ulbType}
+            </p>
+          </div>
+          <span className="text-[10px] font-bold text-blue-600 bg-blue-100 dark:bg-blue-900 px-2 py-0.5 rounded-full shrink-0">
+            Change
+          </span>
+        </button>
+
         {sections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             <h3 className="px-3 text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
@@ -119,11 +138,11 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center gap-2 mb-1">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
-            Govt. of Maharashtra
+            Government of India / State ULBs
           </span>
         </div>
         <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-          Urban Development Dept. • Pilot ULB Code: MH-YTL-KLM
+          Ministry of Housing & Urban Affairs (MoHUA) • 15th FC Portal
         </p>
       </div>
     </aside>

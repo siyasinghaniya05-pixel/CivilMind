@@ -8,7 +8,10 @@ import {
   DepartmentBudget, 
   AiRecommendation, 
   MunicipalCityStats,
-  AiAgentMessage 
+  AiAgentMessage,
+  CityProfile,
+  TenantLevel,
+  HeatmapMode
 } from '@/types';
 import { 
   CITY_STATS, 
@@ -17,8 +20,8 @@ import {
   PROJECTS_DATA, 
   INFRASTRUCTURE_RISKS, 
   AI_RECOMMENDATIONS,
-  AGENT_PROMPTS_SAMPLE 
 } from '@/data/municipalData';
+import { PRE_INDEXED_CITIES, generateCityIntelligence } from '@/services/cityIntelligenceEngine';
 
 export type ActiveTab = 
   | 'overview' 
@@ -33,6 +36,7 @@ export type ActiveTab =
   | 'report-generator' 
   | 'admin-panel'
   | 'ai-agents-hub'
+  | 'multi-tenant'
   | 'wow-build-next'
   | 'wow-simulator'
   | 'wow-digital-twin'
@@ -44,6 +48,15 @@ interface CivicContextType {
   setActiveTab: (tab: ActiveTab) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  currentCity: CityProfile;
+  tenantLevel: TenantLevel;
+  setTenantLevel: (level: TenantLevel) => void;
+  heatmapMode: HeatmapMode;
+  setHeatmapMode: (mode: HeatmapMode) => void;
+  isCityModalOpen: boolean;
+  setIsCityModalOpen: (open: boolean) => void;
+  switchCity: (profile: CityProfile) => void;
+  searchAndSetCity: (cityName: string, coords?: { lat: number; lng: number }) => void;
   stats: MunicipalCityStats;
   wards: WardData[];
   projects: Project[];
@@ -71,6 +84,13 @@ const CivicContext = createContext<CivicContextType | undefined>(undefined);
 export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [tenantLevel, setTenantLevel] = useState<TenantLevel>('municipality');
+  const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('none');
+  const [isCityModalOpen, setIsCityModalOpen] = useState<boolean>(false);
+
+  // Active City Profile (Default: Kalamb)
+  const [currentCity, setCurrentCity] = useState<CityProfile>(PRE_INDEXED_CITIES[0]);
+
   const [stats, setStats] = useState<MunicipalCityStats>(CITY_STATS);
   const [wards, setWards] = useState<WardData[]>(WARDS_DATA);
   const [projects, setProjects] = useState<Project[]>(PROJECTS_DATA);
@@ -86,22 +106,8 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       id: 'msg-1',
       sender: 'agent',
       agentType: 'budget',
-      content: 'Namaskar Chief Officer! I have reviewed Kalamb Nagar Parishad’s ₹12.50 Cr annual development outlay. We currently have ₹2.65 Cr unspent balance under 15th FC tied grants for water & sanitation. How can I assist with your budget allocation today?',
+      content: `Namaskar Chief Officer! I have loaded the municipal intelligence profile for ${currentCity.cityName} ${currentCity.ulbType} (${currentCity.district}). How can I assist with your development planning today?`,
       timestamp: 'Today, 09:15 AM'
-    },
-    {
-      id: 'msg-2',
-      sender: 'agent',
-      agentType: 'risk',
-      content: 'Early monsoon warning: Ward 4 (Indira Nagar) has a 94% predicted inundation probability due to the low elevation basin. Priority desilting of the Ralegaon outlet culvert is recommended before the next heavy precipitation spell.',
-      timestamp: 'Today, 09:30 AM'
-    },
-    {
-      id: 'msg-3',
-      sender: 'agent',
-      agentType: 'priority',
-      content: 'MCDA Priority Engine has evaluated all 12 proposed municipal works. Ward 4 Stormwater Box Drain and Ward 3 Underground Sewage rank at the top with combined impact score > 94/100.',
-      timestamp: 'Today, 10:00 AM'
     }
   ]);
 
@@ -131,8 +137,53 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
+  // Switch City implementation
+  const switchCity = (profile: CityProfile) => {
+    setCurrentCity(profile);
+    const synthesized = generateCityIntelligence(profile.cityName, { lat: profile.lat, lng: profile.lng });
+
+    setWards(synthesized.wards);
+    setProjects(synthesized.projects);
+    setRisks(synthesized.risks);
+    setAiRecommendations(synthesized.recommendations);
+    setTotalBudgetOptimizationCr(profile.totalBudgetCr);
+
+    setStats({
+      cityName: profile.cityName,
+      state: profile.state,
+      district: profile.district,
+      ulbType: `${profile.ulbType} (${profile.ulbClass})`,
+      totalPopulation: profile.totalPopulation,
+      totalWards: profile.totalWards,
+      totalBudgetCr: profile.totalBudgetCr,
+      allocatedBudgetCr: Number((profile.totalBudgetCr * 0.78).toFixed(2)),
+      spentBudgetCr: Number((profile.totalBudgetCr * 0.52).toFixed(2)),
+      unspentBudgetCr: Number((profile.totalBudgetCr * 0.26).toFixed(2)),
+      averageWdiScore: profile.developmentScore,
+      activeProjectsCount: synthesized.projects.length,
+      highRiskZonesCount: synthesized.risks.length,
+      pendingIssuesCount: Math.round(profile.totalPopulation / 400),
+      resolvedGrievancesLastMonth: Math.round(profile.totalPopulation / 180),
+    });
+
+    setAgentMessages([
+      {
+        id: `msg-${Date.now()}`,
+        sender: 'agent',
+        agentType: 'budget',
+        content: `Spatial profile updated for **${profile.cityName} ${profile.ulbType}** (${profile.district}, ${profile.state}). Population: ${profile.totalPopulation.toLocaleString('en-IN')}, Wards: ${profile.totalWards}, Total Annual Budget: ₹${profile.totalBudgetCr.toFixed(2)} Cr. Top problem detected: ${profile.currentProblems[0]}. Ready to assist!`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
+  };
+
+  const searchAndSetCity = (cityName: string, coords?: { lat: number; lng: number }) => {
+    const synthesized = generateCityIntelligence(cityName, coords);
+    switchCity(synthesized.profile);
+  };
+
   const addProject = (newProj: Omit<Project, 'id'>) => {
-    const id = `PRJ-2026-${String(projects.length + 1).padStart(3, '0')}`;
+    const id = `PRJ-${currentCity.cityName.slice(0, 3).toUpperCase()}-${String(projects.length + 1).padStart(3, '0')}`;
     const projectWithId: Project = { ...newProj, id };
     setProjects((prev) => [projectWithId, ...prev]);
   };
@@ -173,42 +224,32 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     setAgentMessages((prev) => [...prev, userMsg]);
 
-    // Generate intelligent AI response tailored for Kalamb Nagar Parishad
     setTimeout(() => {
       let reply = '';
       if (agentType === 'budget') {
-        if (text.toLowerCase().includes('10 crore') || text.toLowerCase().includes('distributed')) {
-          reply = `Based on our multi-attribute optimization model for Kalamb Nagar Parishad:
-1. **Drainage & Flood Mitigation**: Allocate **₹3.20 Cr (32%)** - Solves critical flooding in Ward 4 & Ward 3.
-2. **Roads & Mobility Infrastructure**: Allocate **₹2.80 Cr (28%)** - Upgrades Main Bazar corridor & MIDC road.
-3. **Water Supply & ESR Automation**: Allocate **₹2.20 Cr (22%)** - Resolves tail-end shortage in Ward 11.
-4. **Solid Waste Management**: Allocate **₹1.00 Cr (10%)** - MRF center expansion to ensure Swachh Survekshan compliance.
-5. **Smart LED Streetlighting & Amenities**: Allocate **₹0.80 Cr (8%)** - Energy savings of ₹18L/yr.
-*Projected Outcome:* Raises average Ward Development Index from **68.4 to 81.2** and directly benefits **52,000+ citizens**.`;
-        } else if (text.toLowerCase().includes('unspent') || text.toLowerCase().includes('15th')) {
-          reply = `Kalamb has ₹2.65 Cr in unspent 15th FC grants (₹1.45 Cr Tied for Water & Sanitation, ₹1.20 Cr Untied). Statutory deadline for utilization certificate submission to District Collectorate is 31-Dec-2026. Prioritize Ward 4 Box Drain (₹1.25 Cr) to utilize tied funds immediately.`;
-        } else {
-          reply = `Fiscal Analysis: Kalamb Nagar Parishad’s budget utilization rate stands at 65.2%. Property tax collection efficiency is 71.4%. Reallocating unspent capital grants to high-impact drainage works maximizes grant retention and public welfare.`;
-        }
-      } else if (agentType === 'infra') {
-        reply = `Infrastructure Asset Audit Summary:
-• **Roads:** 18.4 km total network. PDI < 40 detected on 3.8 km (primarily MIDC heavy truck corridor and Ward 4 bypass).
-• **Water Supply:** 5 Elevated Storage Reservoirs operational. SCADA automation in Shivaji Nagar achieved 28% NRW leak reduction. Ward 9 cast iron main has a 79% burst hazard.
-• **Drainage:** 68% of roadside stormwater drains require pre-monsoon mechanized desilting.`;
+        reply = `Budget Analysis for ${currentCity.cityName} ${currentCity.ulbType}:
+Recommended Capital Split:
+• Drainage & Flood Defense: ${currentCity.budgetRecommendations[0]?.percentage || 35}% (₹${currentCity.budgetRecommendations[0]?.amountCr || 3.5} Cr)
+• Roads & Transit Mobility: ${currentCity.budgetRecommendations[1]?.percentage || 25}% (₹${currentCity.budgetRecommendations[1]?.amountCr || 2.5} Cr)
+• Water Security & Telemetry: ${currentCity.budgetRecommendations[2]?.percentage || 20}% (₹${currentCity.budgetRecommendations[2]?.amountCr || 2.0} Cr)
+• SWM & Energy Savings: 20%
+Estimated unspent 15th FC tied grant compliance: 84.5%.`;
       } else if (agentType === 'risk') {
-        reply = `Risk Matrix Forecast:
-⚠️ **Critical Alert:** Ward 4 (Indira Nagar) is at extreme flood risk (94% probability). The confluence point of the local nullah with Ralegaon stream has 1.8m sediment buildup.
-⚠️ **Water Main Hazard:** Shastri Nagar 300mm pipeline pressure fluctuation threatens 8,500 residents with potential 48-hour supply outage if not reinforced this week.`;
+        reply = `Hazard & Vulnerability Audit for ${currentCity.cityName}:
+Identified Vulnerable Hotspots:
+${currentCity.highRiskAreas.map((a, i) => `${i + 1}. ${a}`).join('\n')}
+Priority Action: ${currentCity.currentProblems[0]}.`;
       } else if (agentType === 'priority') {
-        reply = `Prioritization Engine Output:
-1. **Ward 4 Stormwater Box Drain** (Score: 96/100 | High Urgency)
-2. **Ward 3 Underground Sewage Line** (Score: 93/100 | Sanitation/Health)
-3. **Main Bazar CC Road Widening** (Score: 89/100 | High Traffic Flow)
-4. **Ward 17 MIDC Bypass Resurfacing** (Score: 87/100 | Economic Trade Corridor)
-5. **Ward 11 Water Feeder Pipeline** (Score: 85/100 | Equity/Water Access)`;
+        reply = `Development Priority Agent Ranking for ${currentCity.cityName}:
+${currentCity.topDevelopmentPriorities.slice(0, 5).map((p, i) => `${i + 1}. ${p}`).join('\n')}`;
+      } else if (agentType === 'infra') {
+        reply = `Infrastructure Asset Diagnostics for ${currentCity.cityName}:
+Identified Infrastructure Gaps:
+${currentCity.infrastructureGaps.map((g, i) => `• ${g}`).join('\n')}
+Average WDI: ${currentCity.developmentScore}/100 across ${currentCity.totalWards} wards.`;
       } else {
-        reply = `Drafting Council Resolution (ठराव क्र. 44/2026):
-"Resolved that administrative and technical sanction of ₹1,25,00,000 (Rupees One Crore Twenty-Five Lakhs only) under 15th Finance Commission Tied Grants is hereby accorded for the construction of RCC Box Drain in Ward No. 4, Indira Nagar. Tendering shall be initiated immediately on Government e-Marketplace / Mahatenders."`;
+        reply = `Drafting Council Resolution for ${currentCity.cityName} Municipal Council:
+"Resolved that administrative approval of ₹${(currentCity.totalBudgetCr * 0.25).toFixed(2)} Cr is hereby granted for priority capital infrastructure works in ${currentCity.cityName} to mitigate critical flood and road deterioration risks."`;
       }
 
       const agentMsg: AiAgentMessage = {
@@ -224,12 +265,7 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const resetToDefaults = () => {
-    setStats(CITY_STATS);
-    setWards(WARDS_DATA);
-    setProjects(PROJECTS_DATA);
-    setRisks(INFRASTRUCTURE_RISKS);
-    setDepartmentBudgets(DEPARTMENT_BUDGETS);
-    setAiRecommendations(AI_RECOMMENDATIONS);
+    switchCity(PRE_INDEXED_CITIES[0]);
   };
 
   return (
@@ -239,6 +275,15 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setActiveTab,
         isDarkMode,
         toggleDarkMode,
+        currentCity,
+        tenantLevel,
+        setTenantLevel,
+        heatmapMode,
+        setHeatmapMode,
+        isCityModalOpen,
+        setIsCityModalOpen,
+        switchCity,
+        searchAndSetCity,
         stats,
         wards,
         projects,

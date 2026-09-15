@@ -10,6 +10,10 @@ export type DepartmentType =
 
 export type RiskSeverity = 'Critical' | 'High' | 'Moderate' | 'Low';
 
+export type TenantLevel = 'municipality' | 'district' | 'state';
+
+export type HeatmapMode = 'none' | 'flood' | 'roads' | 'deficiency' | 'priority';
+
 export interface WardData {
   id: number;
   number: number;
@@ -126,6 +130,40 @@ export interface AiRecommendation {
   justification: string;
   roiCitizenImpact: string;
   status: 'Pending Council Review' | 'Approved for DPR' | 'Tender Drafted';
+}
+
+export interface CityProfile {
+  id: string;
+  cityName: string;
+  marathiName: string;
+  state: string;
+  district: string;
+  ulbType: 'Nagar Parishad' | 'Nagar Panchayat' | 'Municipal Council' | 'Municipal Corporation';
+  ulbClass: string;
+  totalPopulation: number;
+  totalWards: number;
+  areaSqKm: number;
+  totalBudgetCr: number;
+  lat: number;
+  lng: number;
+  
+  // 5 Core Scores (0-100)
+  cityHealthScore: number;
+  developmentScore: number;
+  budgetEfficiencyScore: number;
+  infrastructureRiskScore: number;
+  citizenSatisfactionScore: number;
+
+  // Location Analysis
+  currentProblems: string[];
+  highRiskAreas: string[];
+  infrastructureGaps: string[];
+  budgetRecommendations: {
+    department: DepartmentType;
+    percentage: number;
+    amountCr: number;
+  }[];
+  topDevelopmentPriorities: string[];
 }
 
 export interface MunicipalCityStats {
