@@ -25,6 +25,12 @@ import { PRE_INDEXED_CITIES, generateCityIntelligence } from '@/services/cityInt
 
 export type ActiveTab = 
   | 'overview' 
+  | 'insights'
+  | 'risks'
+  | 'projects'
+  | 'budget'
+  | 'reports'
+  | 'settings'
   | 'priority-engine' 
   | 'budget-optimizer' 
   | 'ward-index' 

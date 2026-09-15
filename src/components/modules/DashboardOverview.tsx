@@ -3,393 +3,507 @@
 import React from 'react';
 import { useCivic } from '@/context/CivicContext';
 import { 
-  IndianRupee, 
-  Layers, 
-  AlertTriangle, 
-  TrendingUp, 
-  Clock, 
   Sparkles, 
-  ArrowRight, 
-  CheckCircle2, 
-  AlertOctagon, 
-  Building, 
+  TrendingUp, 
+  ShieldAlert, 
+  IndianRupee, 
   Users, 
+  MapPin, 
+  ArrowUpRight, 
+  AlertCircle, 
+  CheckCircle2, 
+  Clock, 
   ChevronRight,
-  ShieldAlert,
-  Sliders,
-  MapPin,
-  HeartPulse,
-  Activity,
-  Award,
-  Smile,
-  ShieldCheck,
-  Target
+  Droplets,
+  Layers,
+  Milestone,
+  Waves
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell 
-} from 'recharts';
+import dynamic from 'next/dynamic';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+
+const DynamicLeafletMap = dynamic(
+  () => import('./map/LeafletMapInner').then((mod) => mod.LeafletMapInner),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[450px] rounded-2xl bg-zinc-100 flex flex-col items-center justify-center text-zinc-400 gap-2">
+        <Sparkles className="w-5 h-5 animate-pulse text-blue-600" />
+        <p className="text-xs font-medium">Loading interactive city spatial canvas...</p>
+      </div>
+    ),
+  }
+);
 
 export const DashboardOverview: React.FC = () => {
   const { 
     currentCity, 
-    stats, 
     wards, 
     projects, 
     risks, 
     departmentBudgets, 
-    aiRecommendations, 
     setActiveTab, 
-    setSelectedProject,
-    setIsCityModalOpen
+    setIsCityModalOpen 
   } = useCivic();
 
-  const criticalRisks = risks.filter(r => r.severity === 'Critical');
-  const delayedProjects = projects.filter(p => p.status === 'Delayed');
-  const inProgressProjects = projects.filter(p => p.status === 'In Progress');
+  // Top priorities requested by user
+  const topPriorities = [
+    {
+      rank: '#1',
+      title: 'Drainage Upgrade',
+      ward: 'Ward 4',
+      impactScore: 95,
+      budget: '₹1.2 Cr',
+      citizens: '18,200',
+      tag: 'Critical Priority',
+      tagColor: 'bg-red-50 text-red-700 border-red-200/60'
+    },
+    {
+      rank: '#2',
+      title: 'Road Rehabilitation',
+      ward: 'Ward 2',
+      impactScore: 89,
+      budget: '₹95 L',
+      citizens: '34,000',
+      tag: 'High Traffic Route',
+      tagColor: 'bg-blue-50 text-blue-700 border-blue-200/60'
+    },
+    {
+      rank: '#3',
+      title: 'Water Supply Upgrade',
+      ward: 'Ward 6',
+      impactScore: 84,
+      budget: '₹65 L',
+      citizens: '12,500',
+      tag: 'Feeder Pipeline',
+      tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/60'
+    }
+  ];
 
-  // Chart data for department budget allocations vs spent
-  const deptChartData = departmentBudgets.map(d => ({
-    name: d.department.split('&')[0].trim(),
-    Allocated: d.allocatedLakhs,
-    Spent: d.spentLakhs,
-  }));
+  // AI Insights requested by user
+  const aiInsights = [
+    {
+      id: 1,
+      title: 'Drainage infrastructure requires immediate attention.',
+      detail: 'Monsoon elevation modeling predicts backwater inundation in Ward 4 and 5 low basins if outfall culvert desilting is delayed.',
+      impact: '18,200 citizens affected',
+      badge: 'High Impact',
+      action: 'View Drainage Tender'
+    },
+    {
+      id: 2,
+      title: 'Ward 5 has the highest infrastructure risk.',
+      detail: 'Composite failure probability of 84% detected due to simultaneous open drain silting and storm runoff convergence.',
+      impact: '84% risk probability',
+      badge: 'Urgent Remediation',
+      action: 'Inspect Risk Map'
+    },
+    {
+      id: 3,
+      title: 'Road maintenance should be prioritized this quarter.',
+      detail: 'Pavement Distress Index (PDI) dropped below 40 on arterial commercial routes, driving up commuter transit delay by 35%.',
+      impact: '34,000 commuters',
+      badge: 'Economic Spine',
+      action: 'Review Road Budget'
+    }
+  ];
 
-  const sortedWards = [...wards].sort((a, b) => b.compositeScore - a.compositeScore);
-  const bestWard = sortedWards[0] || wards[0];
-  const weakestWard = sortedWards[sortedWards.length - 1] || wards[0];
+  // Modern donut chart data
+  const donutData = [
+    { name: 'Roads', value: 30, amount: '₹11.5 Cr', color: '#2563eb' },
+    { name: 'Water', value: 25, amount: '₹9.6 Cr', color: '#0d9488' },
+    { name: 'Drainage', value: 35, amount: '₹13.4 Cr', color: '#0284c7' },
+    { name: 'Sanitation', value: 10, amount: '₹3.9 Cr', color: '#10b981' }
+  ];
+
+  // Kanban status grouping
+  const kanbanColumns = [
+    { 
+      status: 'Planned', 
+      count: projects.filter(p => p.status === 'Planned').length, 
+      items: projects.filter(p => p.status === 'Planned').slice(0, 2) 
+    },
+    { 
+      status: 'Active', 
+      count: projects.filter(p => p.status === 'In Progress' || p.status === 'Approved').length, 
+      items: projects.filter(p => p.status === 'In Progress' || p.status === 'Approved').slice(0, 3) 
+    },
+    { 
+      status: 'Delayed', 
+      count: projects.filter(p => p.status === 'Delayed').length, 
+      items: projects.filter(p => p.status === 'Delayed').slice(0, 2) 
+    },
+    { 
+      status: 'Completed', 
+      count: projects.filter(p => p.status === 'Completed').length, 
+      items: projects.filter(p => p.status === 'Completed').slice(0, 2) 
+    }
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner: Dynamic City Intelligence Brief */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 p-6 lg:p-8 text-white shadow-xl border border-blue-900/60">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-12 pb-16">
+      {/* 1. LARGE HERO SECTION */}
+      <section className="space-y-4 pt-2">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-200 border border-blue-400/30 backdrop-blur">
-                <Sparkles className="w-3.5 h-3.5 text-blue-300" />
-                City Intelligence Profile • {currentCity.state}
-              </span>
-              <button
-                onClick={() => setIsCityModalOpen(true)}
-                className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
-              >
-                Change Location / City ⇄
-              </button>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-medium text-zinc-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+              <span>AI-Powered Development Intelligence</span>
             </div>
 
-            <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
-              {currentCity.cityName} {currentCity.ulbType}
-              <span className="text-base font-normal text-slate-400 ml-2">
-                ({currentCity.district}, {currentCity.state})
-              </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950">
+              {currentCity.cityName}, {currentCity.state}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
-              Population: <strong>{currentCity.totalPopulation.toLocaleString('en-IN')}</strong> | Area: <strong>{currentCity.areaSqKm} sq km</strong> | Total Wards: <strong>{currentCity.totalWards}</strong> | FY Capital Outlay: <strong>₹{currentCity.totalBudgetCr.toFixed(2)} Cr</strong>
+            <p className="text-sm text-zinc-500 max-w-xl">
+              Data-driven resource allocation, infrastructure hazard forecasting, and citizen impact modeling for municipal governance.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setActiveTab('wow-build-next')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-xs shadow-lg transition-all hover:scale-105"
-            >
-              <Sparkles className="w-4 h-4" />
-              What Should We Build Next?
-            </button>
-            <button
-              onClick={() => setActiveTab('smart-map')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 backdrop-blur transition-all"
-            >
-              <MapPin className="w-4 h-4" />
-              GIS Risk Map
-            </button>
+          {/* City Health Score Prominent Badge */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center gap-4 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 font-black text-xl">
+              82
+            </div>
+            <div>
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block">
+                City Health Score
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-bold text-zinc-950">82/100</span>
+                <span className="text-xs font-semibold text-emerald-600">+3.4 pts</span>
+              </div>
+              <p className="text-[11px] text-zinc-400 mt-0.5">Top 12% in state urban benchmark</p>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Decorative background glow */}
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-10 -top-10 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      </div>
-
-      {/* 5 CORE DASHBOARD SCORES (Requested by User) */}
-      <div>
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-blue-600" />
-            Core Urban Performance & Health Indicators
-          </h2>
-          <span className="text-[11px] text-slate-500">Benchmark Scale: 0 to 100</span>
+      {/* 2. FOUR LARGE METRIC CARDS */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Development Score */}
+        <div className="modern-card p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400">
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Development Score</span>
+            <TrendingUp className="w-4 h-4 text-blue-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-zinc-950">78</span>
+            <span className="text-xs text-zinc-400">/100</span>
+          </div>
+          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-600 rounded-full" style={{ width: '78%' }} />
+          </div>
+          <p className="text-xs text-zinc-500">+4.2% lift vs last quarter</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          {/* 1. City Health Score */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-bold uppercase tracking-wider">City Health Score</span>
-              <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                <HeartPulse className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl lg:text-3xl font-black text-emerald-600 dark:text-emerald-400">
-                {currentCity.cityHealthScore}
-              </span>
-              <span className="text-xs text-slate-400">/100</span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${currentCity.cityHealthScore}%` }} />
-            </div>
-            <p className="text-[10px] text-slate-500">Water, air & sanitation index</p>
+        {/* Infrastructure Risk */}
+        <div className="modern-card p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400">
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Infrastructure Risk</span>
+            <ShieldAlert className="w-4 h-4 text-emerald-600" />
           </div>
-
-          {/* 2. Development Score */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-blue-400 transition-colors"
-               onClick={() => setActiveTab('ward-index')}>
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-bold uppercase tracking-wider">Development Score</span>
-              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                <TrendingUp className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl lg:text-3xl font-black text-blue-600 dark:text-blue-400">
-                {currentCity.developmentScore}
-              </span>
-              <span className="text-xs text-slate-400">/100</span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-blue-600 rounded-full" style={{ width: `${currentCity.developmentScore}%` }} />
-            </div>
-            <p className="text-[10px] text-slate-500">Composite WDI average</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-emerald-600">24%</span>
+            <span className="text-xs text-zinc-400 font-medium">Low Risk</span>
           </div>
-
-          {/* 3. Budget Efficiency Score */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-indigo-400 transition-colors"
-               onClick={() => setActiveTab('budget-optimizer')}>
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-bold uppercase tracking-wider">Budget Efficiency</span>
-              <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                <IndianRupee className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl lg:text-3xl font-black text-indigo-600 dark:text-indigo-400">
-                {currentCity.budgetEfficiencyScore}
-              </span>
-              <span className="text-xs text-slate-400">/100</span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${currentCity.budgetEfficiencyScore}%` }} />
-            </div>
-            <p className="text-[10px] text-slate-500">CapEx spend vs milestone pace</p>
+          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '24%' }} />
           </div>
-
-          {/* 4. Infrastructure Risk Score */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-red-400 transition-colors"
-               onClick={() => setActiveTab('risk-prediction')}>
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-bold uppercase tracking-wider">Infrastructure Risk</span>
-              <div className="p-1.5 rounded-lg bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300">
-                <AlertTriangle className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className={`text-2xl lg:text-3xl font-black ${
-                currentCity.infrastructureRiskScore > 70 ? 'text-red-600 dark:text-red-400' : 'text-amber-600'
-              }`}>
-                {currentCity.infrastructureRiskScore}
-              </span>
-              <span className="text-xs text-slate-400">/100</span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div 
-                className={`h-full rounded-full ${
-                  currentCity.infrastructureRiskScore > 70 ? 'bg-red-600' : 'bg-amber-500'
-                }`} 
-                style={{ width: `${currentCity.infrastructureRiskScore}%` }} 
-              />
-            </div>
-            <p className="text-[10px] text-slate-500">{criticalRisks.length} critical failure alerts</p>
-          </div>
-
-          {/* 5. Citizen Satisfaction Score */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 col-span-2 sm:col-span-1">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-bold uppercase tracking-wider">Citizen Satisfaction</span>
-              <div className="p-1.5 rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300">
-                <Smile className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl lg:text-3xl font-black text-teal-600 dark:text-teal-400">
-                {currentCity.citizenSatisfactionScore}%
-              </span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-teal-500 rounded-full" style={{ width: `${currentCity.citizenSatisfactionScore}%` }} />
-            </div>
-            <p className="text-[10px] text-slate-500">Grievance resolution metric</p>
-          </div>
+          <p className="text-xs text-zinc-500">3 areas flagged for maintenance</p>
         </div>
-      </div>
 
-      {/* AUTOMATIC LOCATION ANALYSIS SECTION (Requested by User) */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div>
-            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block">
-              Automated Location Analysis Report
-            </span>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">
-              Diagnostic Synthesis for {currentCity.cityName} ({currentCity.ulbType})
+        {/* Budget Efficiency */}
+        <div className="modern-card p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400">
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Budget Efficiency</span>
+            <IndianRupee className="w-4 h-4 text-zinc-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-zinc-950">91%</span>
+            <span className="text-xs text-emerald-600 font-semibold">Optimal</span>
+          </div>
+          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div className="h-full bg-zinc-900 rounded-full" style={{ width: '91%' }} />
+          </div>
+          <p className="text-xs text-zinc-500">₹18.4 Cr committed capital</p>
+        </div>
+
+        {/* Citizens Impacted */}
+        <div className="modern-card p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400">
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Citizens Impacted</span>
+            <Users className="w-4 h-4 text-zinc-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-zinc-950">148,900</span>
+          </div>
+          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-600 rounded-full" style={{ width: '94%' }} />
+          </div>
+          <p className="text-xs text-zinc-500">94% municipal population coverage</p>
+        </div>
+      </section>
+
+      {/* 3. SECOND SECTION: AI INSIGHTS PANEL (Linear / Perplexity style) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <h2 className="text-base font-bold text-zinc-950">
+              AI Insights & Action Briefs
             </h2>
           </div>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200">
-            Real-Time Analysis Generated
+          <span className="text-xs text-zinc-400">Updated in real-time</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {aiInsights.map((insight) => (
+            <div
+              key={insight.id}
+              className="modern-card p-5 flex flex-col justify-between space-y-4 hover:border-zinc-300 transition-all"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200">
+                    {insight.badge}
+                  </span>
+                  <span className="text-[11px] text-zinc-400">{insight.impact}</span>
+                </div>
+
+                <h3 className="text-sm font-semibold text-zinc-950 leading-snug">
+                  "{insight.title}"
+                </h3>
+
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  {insight.detail}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setActiveTab('overview')}
+                className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <span>{insight.action}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. THIRD SECTION: INTERACTIVE CITY MAP (Large Full-Width Clean Map) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-zinc-700" />
+            <h2 className="text-base font-bold text-zinc-950">
+              City Infrastructure & Risk Canvas
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs text-zinc-500">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Wards
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-red-500" /> Risk Zones
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-600" /> Projects
+            </span>
+          </div>
+        </div>
+
+        <div className="w-full h-[460px] rounded-2xl overflow-hidden border border-zinc-200 shadow-2xs">
+          <DynamicLeafletMap
+            centerLat={currentCity.lat}
+            centerLng={currentCity.lng}
+            wards={wards}
+            projects={projects}
+            risks={risks}
+            heatmapMode="none"
+            activeLayers={{
+              development: true,
+              risk: true,
+              budget: true,
+              infrastructure: true,
+              facilities: false
+            }}
+          />
+        </div>
+      </section>
+
+      {/* 5. FOURTH SECTION: TOP DEVELOPMENT PRIORITIES */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-blue-600" />
+            <h2 className="text-base font-bold text-zinc-950">
+              Top Development Priorities
+            </h2>
+          </div>
+          <span className="text-xs text-zinc-400">Ranked by citizen impact ROI</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {topPriorities.map((item) => (
+            <div
+              key={item.rank}
+              className="modern-card p-5 space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-blue-600 font-mono">
+                  {item.rank}
+                </span>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${item.tagColor}`}>
+                  {item.tag}
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-base font-bold text-zinc-950">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Location: <strong className="text-zinc-800">{item.ward}</strong>
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-zinc-100 text-center">
+                <div>
+                  <span className="text-[10px] text-zinc-400 uppercase block">Impact</span>
+                  <strong className="text-xs font-bold text-emerald-600">{item.impactScore}/100</strong>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 uppercase block">Budget</span>
+                  <strong className="text-xs font-bold text-zinc-900">{item.budget}</strong>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 uppercase block">Reach</span>
+                  <strong className="text-xs font-bold text-zinc-900">{item.citizens}</strong>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. FIFTH SECTION: BUDGET SECTION (Modern Donut Chart & Allocation) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <IndianRupee className="w-4 h-4 text-zinc-700" />
+            <h2 className="text-base font-bold text-zinc-950">
+              Budget Allocation & Optimization
+            </h2>
+          </div>
+          <span className="text-xs text-zinc-500 font-mono">
+            Total Outlay: ₹{currentCity.totalBudgetCr.toFixed(1)} Cr
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          {/* 1. Current Problems */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2">
-            <span className="font-bold text-red-700 dark:text-red-400 flex items-center gap-1.5 uppercase text-[11px]">
-              <AlertCircleIcon className="w-4 h-4 text-red-600" />
-              1. Current Problems Detected
-            </span>
-            <ul className="space-y-1.5 text-slate-700 dark:text-slate-300">
-              {currentCity.currentProblems.map((p, idx) => (
-                <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-red-500 font-bold">•</span>
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* 2. High-Risk Areas */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2">
-            <span className="font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 uppercase text-[11px]">
-              <ShieldAlert className="w-4 h-4 text-amber-600" />
-              2. High-Risk Vulnerability Areas
-            </span>
-            <ul className="space-y-1.5 text-slate-700 dark:text-slate-300">
-              {currentCity.highRiskAreas.map((a, idx) => (
-                <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-amber-500 font-bold">•</span>
-                  <span>{a}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* 3. Infrastructure Gaps */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2">
-            <span className="font-bold text-blue-700 dark:text-blue-400 flex items-center gap-1.5 uppercase text-[11px]">
-              <Layers className="w-4 h-4 text-blue-600" />
-              3. Critical Infrastructure Gaps
-            </span>
-            <ul className="space-y-1.5 text-slate-700 dark:text-slate-300">
-              {currentCity.infrastructureGaps.map((g, idx) => (
-                <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-blue-500 font-bold">•</span>
-                  <span>{g}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* 4. Budget Recommendations & 5. Top Priorities */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-          {/* Budget Recommendations (5 cols) */}
-          <div className="lg:col-span-5 p-4 rounded-2xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/60 space-y-3 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-blue-900 dark:text-blue-300 uppercase text-[11px] flex items-center gap-1.5">
-                <IndianRupee className="w-4 h-4 text-blue-600" />
-                4. AI Recommended Budget Distribution
-              </span>
-              <span className="font-mono font-bold text-blue-700">₹{currentCity.totalBudgetCr.toFixed(2)} Cr Outlay</span>
-            </div>
-
-            <div className="space-y-2">
-              {currentCity.budgetRecommendations.map((b) => (
-                <div key={b.department} className="space-y-1">
-                  <div className="flex justify-between text-[11px] font-semibold">
-                    <span className="text-slate-700 dark:text-slate-300">{b.department}</span>
-                    <span className="font-bold text-slate-900 dark:text-white">
-                      {b.percentage}% (₹{b.amountCr} Cr)
-                    </span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                    <div className="h-full bg-blue-600 rounded-full" style={{ width: `${b.percentage}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => setActiveTab('budget-optimizer')}
-              className="w-full py-2 text-xs font-bold rounded-xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm mt-2"
-            >
-              Simulate Alternative Allocations →
-            </button>
-          </div>
-
-          {/* Top Development Priorities (7 cols) */}
-          <div className="lg:col-span-7 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 dark:text-white uppercase text-[11px] flex items-center gap-1.5">
-                <Target className="w-4 h-4 text-emerald-600" />
-                5. Top Ranked Development Priorities for {currentCity.cityName}
-              </span>
-              <button
-                onClick={() => setActiveTab('priority-engine')}
-                className="text-[11px] font-bold text-blue-600 hover:underline"
-              >
-                MCDA Engine →
-              </button>
-            </div>
-
-            <div className="space-y-1.5">
-              {currentCity.topDevelopmentPriorities.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/60 flex items-center justify-between text-xs"
+        <div className="modern-card p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          {/* Donut Chart (5 cols) */}
+          <div className="lg:col-span-5 h-56 flex items-center justify-center relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={donutData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={65}
+                  outerRadius={90}
+                  paddingAngle={3}
+                  dataKey="value"
                 >
-                  <div className="flex items-center gap-2 truncate max-w-md">
-                    <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-[10px] shrink-0">
-                      {idx + 1}
-                    </span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">{item}</span>
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 shrink-0">
-                    High ROI
-                  </span>
-                </div>
-              ))}
+                  {donutData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#09090b', borderRadius: '8px', color: '#fff', fontSize: '11px', border: 'none' }}
+                  formatter={(val: any, name: any) => [`${val}% (${donutData.find(d => d.name === name)?.amount})`, name]}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-2xl font-extrabold text-zinc-950">100%</span>
+              <span className="text-[10px] text-zinc-400 uppercase font-medium">Allocated</span>
             </div>
           </div>
+
+          {/* Allocation Progress Breakdown (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            {donutData.map((item) => (
+              <div key={item.name} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="font-semibold text-zinc-800">{item.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-zinc-400">{item.amount}</span>
+                    <span className="font-bold text-zinc-950 font-mono">{item.value}%</span>
+                  </div>
+                </div>
+                <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* 7. SIXTH SECTION: STARTUP PROJECT TRACKER (Linear-Style Kanban) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Layers className="w-4 h-4 text-zinc-700" />
+            <h2 className="text-base font-bold text-zinc-950">
+              Project Execution Tracker
+            </h2>
+          </div>
+          <span className="text-xs text-zinc-400">Linear-style pipeline</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {kanbanColumns.map((col) => (
+            <div key={col.status} className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70 space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-200/60">
+                <span className="text-xs font-bold text-zinc-800">{col.status}</span>
+                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white text-zinc-600 border border-zinc-200">
+                  {col.count}
+                </span>
+              </div>
+
+              <div className="space-y-2.5">
+                {col.items.map((proj) => (
+                  <div
+                    key={proj.id}
+                    className="p-3 rounded-lg bg-white border border-zinc-200 shadow-2xs hover:border-zinc-300 transition-all space-y-2"
+                  >
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-zinc-400 font-mono">{proj.id}</span>
+                      <span className="font-bold text-zinc-900">₹{proj.budgetLakhs}L</span>
+                    </div>
+
+                    <h4 className="text-xs font-semibold text-zinc-900 line-clamp-2">
+                      {proj.title}
+                    </h4>
+
+                    <div className="flex items-center justify-between text-[10px] text-zinc-500 pt-1 border-t border-zinc-100">
+                      <span>{proj.wardName}</span>
+                      <span className="font-semibold text-blue-600">{proj.completionPercentage}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
-
-function AlertCircleIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="8" x2="12" y2="12" />
-      <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-  );
-}

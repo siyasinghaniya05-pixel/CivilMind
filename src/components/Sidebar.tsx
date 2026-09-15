@@ -3,146 +3,92 @@
 import React from 'react';
 import { useCivic, ActiveTab } from '@/context/CivicContext';
 import { 
-  LayoutDashboard, 
-  ArrowUpNarrowWide, 
-  Calculator, 
-  MapPin, 
-  AlertTriangle, 
-  Map, 
-  KanbanSquare, 
+  LayoutGrid, 
   Sparkles, 
-  BarChart3, 
+  AlertTriangle, 
+  Kanban, 
+  PieChart, 
   FileText, 
-  Settings, 
-  Bot, 
-  Sliders, 
-  Boxes, 
-  Users, 
-  CalendarRange,
-  Globe2,
-  Building
+  Settings,
+  MapPin,
+  ArrowUpRight
 } from 'lucide-react';
 
-interface NavItem {
+interface SidebarItem {
   id: ActiveTab;
   label: string;
-  badge?: string;
-  badgeColor?: string;
   icon: React.ComponentType<{ className?: string }>;
+  badge?: string;
 }
 
 export const Sidebar: React.FC = () => {
-  const { activeTab, setActiveTab, risks, aiRecommendations, currentCity, setIsCityModalOpen } = useCivic();
+  const { activeTab, setActiveTab, risks, currentCity } = useCivic();
 
-  const criticalRisks = risks.filter(r => r.severity === 'Critical').length;
-  const pendingRecs = aiRecommendations.filter(r => r.status === 'Pending Council Review').length;
+  const criticalCount = risks.filter(r => r.severity === 'Critical').length;
 
-  const sections: { title: string; items: NavItem[] }[] = [
-    {
-      title: 'COMMAND CENTER',
-      items: [
-        { id: 'overview', label: 'City Executive Dashboard', icon: LayoutDashboard },
-        { id: 'multi-tenant', label: 'District & State Monitor', badge: 'Multi-ULB', badgeColor: 'bg-indigo-600 text-white', icon: Globe2 },
-        { id: 'ai-agents-hub', label: '7 AI Agents Suite', badge: 'Active', badgeColor: 'bg-emerald-500 text-white', icon: Bot },
-      ]
-    },
-    {
-      title: 'INTELLIGENCE ENGINES',
-      items: [
-        { id: 'priority-engine', label: '1. Priority Engine (MCDA)', badge: 'Ranked', badgeColor: 'bg-blue-600 text-white', icon: ArrowUpNarrowWide },
-        { id: 'budget-optimizer', label: '2. Budget Optimizer', icon: Calculator },
-        { id: 'ward-index', label: '3. Ward Index (WDI)', badge: `${currentCity.totalWards} Wards`, badgeColor: 'bg-indigo-600 text-white', icon: MapPin },
-        { id: 'risk-prediction', label: '4. Risk & Heatmaps', badge: criticalRisks > 0 ? `${criticalRisks} Alert` : undefined, badgeColor: 'bg-red-600 text-white', icon: AlertTriangle },
-        { id: 'smart-map', label: '5. GIS Smart City Map', badge: 'OSM', badgeColor: 'bg-emerald-600 text-white', icon: Map },
-      ]
-    },
-    {
-      title: 'EXECUTION & IMPACT',
-      items: [
-        { id: 'project-monitoring', label: '6. Project Monitoring', icon: KanbanSquare },
-        { id: 'ai-recommendations', label: '7. AI Recommendations', badge: pendingRecs > 0 ? `${pendingRecs}` : undefined, badgeColor: 'bg-amber-600 text-white', icon: Sparkles },
-        { id: 'impact-analytics', label: '8. Impact Analytics', icon: BarChart3 },
-        { id: 'report-generator', label: '9. Report Generator', icon: FileText },
-        { id: 'admin-panel', label: '10. Admin Panel', icon: Settings },
-      ]
-    },
-    {
-      title: 'WOW INNOVATIONS',
-      items: [
-        { id: 'wow-build-next', label: 'What To Build Next? AI', badge: 'AI Wizard', badgeColor: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white', icon: Sparkles },
-        { id: 'wow-simulator', label: 'Budget Simulator', icon: Sliders },
-        { id: 'wow-digital-twin', label: 'Digital Twin View', icon: Boxes },
-        { id: 'wow-calculator', label: 'Citizen Impact Calc', icon: Users },
-        { id: 'wow-adp', label: 'Multi-Year Plan (1-3-5)', icon: CalendarRange },
-      ]
-    }
+  const navItems: SidebarItem[] = [
+    { id: 'overview', label: 'Overview', icon: LayoutGrid },
+    { id: 'insights', label: 'Insights', icon: Sparkles, badge: 'AI' },
+    { id: 'risks', label: 'Risks', icon: AlertTriangle, badge: criticalCount > 0 ? `${criticalCount}` : undefined },
+    { id: 'projects', label: 'Projects', icon: Kanban },
+    { id: 'budget', label: 'Budget', icon: PieChart },
+    { id: 'reports', label: 'Reports', icon: FileText },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
-    <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 backdrop-blur min-h-[calc(100vh-4rem)] p-3 flex flex-col justify-between overflow-y-auto">
-      <div className="space-y-6">
-        {/* City Quick Switcher Tile */}
-        <button
-          onClick={() => setIsCityModalOpen(true)}
-          className="w-full p-2.5 rounded-xl border border-blue-200 dark:border-blue-900 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 text-left hover:border-blue-400 transition-all flex items-center justify-between"
-        >
-          <div className="truncate">
-            <span className="text-[10px] font-bold text-blue-700 dark:text-blue-300 uppercase block">Selected ULB</span>
-            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-              {currentCity.cityName} {currentCity.ulbType}
-            </p>
-          </div>
-          <span className="text-[10px] font-bold text-blue-600 bg-blue-100 dark:bg-blue-900 px-2 py-0.5 rounded-full shrink-0">
-            Change
-          </span>
-        </button>
+    <aside className="w-56 shrink-0 border-r border-zinc-200 bg-white min-h-[calc(100vh-3.5rem)] p-3 flex flex-col justify-between select-none">
+      <div className="space-y-1">
+        <p className="px-3 py-2 text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
+          Workspace
+        </p>
 
-        {sections.map((section, idx) => (
-          <div key={idx} className="space-y-1">
-            <h3 className="px-3 text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
-              {section.title}
-            </h3>
-            <div className="space-y-0.5">
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                      isActive
-                        ? 'bg-blue-700 text-white shadow-sm shadow-blue-500/20 dark:bg-blue-600'
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 truncate">
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 dark:text-slate-400'}`} />
-                      <span className="truncate">{item.label}</span>
-                    </div>
-                    {item.badge && (
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase shrink-0 ${item.badgeColor || 'bg-slate-200 text-slate-800'}`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+        <div className="space-y-0.5">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-zinc-100 text-zinc-950 font-semibold shadow-2xs'
+                    : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-blue-600' : 'text-zinc-400'}`} />
+                  <span>{item.label}</span>
+                </div>
+
+                {item.badge && (
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${
+                    item.badge === 'AI' 
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200/60'
+                      : 'bg-red-50 text-red-700 border border-red-200/60'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Footer Nagar Parishad Badge */}
-      <div className="mt-8 p-3 rounded-xl bg-gradient-to-br from-blue-900/10 via-slate-900/5 to-emerald-900/10 dark:from-blue-950/40 dark:to-emerald-950/40 border border-blue-200/40 dark:border-blue-900/40">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
-            Government of India / State ULBs
-          </span>
+      {/* Subtle city status card */}
+      <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80 space-y-1">
+        <div className="flex items-center justify-between text-[11px] text-zinc-500">
+          <span>Active City</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
         </div>
-        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-          Ministry of Housing & Urban Affairs (MoHUA) • 15th FC Portal
+        <p className="text-xs font-semibold text-zinc-900 truncate">
+          {currentCity.cityName}
+        </p>
+        <p className="text-[10px] text-zinc-400">
+          {currentCity.totalWards} Wards • FY 2026-27
         </p>
       </div>
     </aside>

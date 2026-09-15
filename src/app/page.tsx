@@ -24,6 +24,7 @@ import { CitizenImpactCalculator } from '@/components/wow/CitizenImpactCalculato
 import { AnnualDevelopmentPlan } from '@/components/wow/AnnualDevelopmentPlan';
 import { NewProjectModal } from '@/components/modals/NewProjectModal';
 import { CitySelectorModal } from '@/components/common/CitySelectorModal';
+import { FloatingAiAssistant } from '@/components/common/FloatingAiAssistant';
 
 export default function HomePage() {
   const { activeTab, isCityModalOpen, setIsCityModalOpen } = useCivic();
@@ -33,26 +34,32 @@ export default function HomePage() {
     switch (activeTab) {
       case 'overview':
         return <DashboardOverview />;
-      case 'priority-engine':
-        return <PriorityEngine />;
-      case 'budget-optimizer':
-        return <BudgetOptimizer />;
-      case 'ward-index':
-        return <WardDevelopmentIndex />;
-      case 'risk-prediction':
-        return <RiskPrediction />;
-      case 'smart-map':
-        return <SmartCityMap />;
-      case 'project-monitoring':
-        return <ProjectMonitoring />;
+      case 'insights':
       case 'ai-recommendations':
         return <AiRecommendations />;
-      case 'impact-analytics':
-        return <ImpactAnalytics />;
+      case 'risks':
+      case 'risk-prediction':
+        return <RiskPrediction />;
+      case 'projects':
+      case 'project-monitoring':
+        return <ProjectMonitoring />;
+      case 'budget':
+      case 'budget-optimizer':
+        return <BudgetOptimizer />;
+      case 'reports':
       case 'report-generator':
         return <ReportGenerator />;
+      case 'settings':
       case 'admin-panel':
         return <AdminPanel />;
+      case 'priority-engine':
+        return <PriorityEngine />;
+      case 'ward-index':
+        return <WardDevelopmentIndex />;
+      case 'smart-map':
+        return <SmartCityMap />;
+      case 'impact-analytics':
+        return <ImpactAnalytics />;
       case 'ai-agents-hub':
         return <AiAgentsHub />;
       case 'multi-tenant':
@@ -73,7 +80,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-white text-zinc-950 transition-colors">
       <Navbar onOpenNewProjectModal={() => setIsNewProjectModalOpen(true)} />
 
       <div className="flex-1 flex flex-col md:flex-row">
@@ -85,6 +92,9 @@ export default function HomePage() {
           {renderActiveModule()}
         </main>
       </div>
+
+      {/* Floating AI Copilot (Perplexity style) */}
+      <FloatingAiAssistant />
 
       {/* New Project Tender Modal */}
       <NewProjectModal

@@ -2,48 +2,33 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafafa;
+  --foreground: #09090b;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #1e40af;
-  --primary-foreground: #ffffff;
-  --secondary: #059669;
-  --secondary-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
-}
-
-.dark {
-  --background: #090d16;
-  --foreground: #f1f5f9;
-  --card: #0f172a;
-  --card-foreground: #f8fafc;
-  --primary: #3b82f6;
+  --card-foreground: #09090b;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
   --secondary: #10b981;
   --secondary-foreground: #ffffff;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --border: #1e293b;
-  --accent: #172554;
-  --accent-foreground: #93c5fd;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --ring: #2563eb;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbars */
+/* Subtle sleek scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -51,34 +36,31 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
-  border-radius: 4px;
+  background: #d4d4d8;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.6);
+  background: #a1a1aa;
 }
 
-/* Leaflet map custom fixes */
+/* Modern clean Leaflet container */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
+  background: #f4f4f5;
+  font-family: inherit;
   z-index: 10;
 }
 
 .leaflet-popup-content-wrapper {
   background: #ffffff;
-  color: #0f172a;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  color: #09090b;
+  border-radius: 0.875rem;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e4e4e7;
   padding: 0;
-}
-
-.dark .leaflet-popup-content-wrapper {
-  background: #0f172a;
-  color: #f8fafc;
-  border: 1px solid #334155;
 }
 
 .leaflet-popup-content {
@@ -86,19 +68,15 @@ body {
   line-height: 1.4;
 }
 
-/* Print Styles for Municipal Reports */
-@media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-  .page-break {
-    page-break-before: always;
-  }
+/* Modern subtle card styling */
+.modern-card {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modern-card:hover {
+  border-color: #d4d4d8;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
