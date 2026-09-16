@@ -40,9 +40,9 @@ export const FloatingAiAssistant: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const suggestedQuestions = [
-    'What should this city prioritize next?',
-    'Which ward is at highest risk?',
-    'How should ₹5 crore be allocated?'
+    `What should ${currentCity.cityName} prioritize next?`,
+    'Which ward has the highest risk?',
+    'How should ₹10 crore be allocated?'
   ];
 
   const handleSend = (textToSend?: string) => {
@@ -63,36 +63,47 @@ export const FloatingAiAssistant: React.FC = () => {
       const lower = q.toLowerCase();
 
       if (lower.includes('prioritize') || lower.includes('build next') || lower.includes('what should')) {
-        answer = `Based on multi-criteria analysis for **${currentCity.cityName}**:
-1. **Ward 4 Drainage Upgrade** — Immediate priority (Score: 95/100). Benefits 18,200 residents and halts chronic monsoon waterlogging.
-2. **Main Bazar CC Road Rehabilitation** — Second priority (Score: 89/100). Heavy commercial freight corridor with high pothole index.
-3. **Ward 6 Feeder Water Pipeline** — Third priority (Score: 84/100). Resolves tail-end low pressure for 12,500 residents.`;
+        answer = `Based on multi-criteria spatial analysis for **${currentCity.cityName}**:
+1. **#1 Drainage Upgrade – Ward 4** (Score: 95/100, Est. ₹1.2 Cr). Benefits 12,000 citizens and halts chronic waterlogging before the monsoon.
+2. **#2 Road Rehabilitation – Ward 2** (Score: 89/100, Est. ₹95 L). Heavily traversed market freight artery with high pavement wear.
+3. **#3 Water Supply Expansion – Ward 6** (Score: 84/100, Est. ₹65 L). Balances distribution pressure for 12,500 residents.`;
         sources = ['Monsoon Elevation Model', 'Grievance Density Index', 'Tender Registry'];
-        actionLabel = 'View Priority Engine';
+        actionLabel = 'View Priority Projects';
         actionTab = 'overview';
       } else if (lower.includes('risk') || lower.includes('which ward')) {
-        answer = `**Ward 5 has the highest infrastructure risk** in ${currentCity.cityName}.
-- **Primary Hazard:** Monsoon nullah backwater overflow (84% inundation probability).
-- **Secondary Hazard:** Stagnant drainage causing vector-borne health risks.
-- **Remediation Recommendation:** Expedite 1.8km RCC box drain and deploy dewatering diesel pumps prior to next precipitation window.`;
-        sources = ['Hydrodynamic Basin Model', 'District Health Audit', 'Civic Complaints'];
-        actionLabel = 'Inspect Risk Heatmap';
+        const topHazard = currentCity.highRiskAreas[0] || 'Ward 4 (Primary drainage blockage)';
+        answer = `**${topHazard} has the highest infrastructure risk in ${currentCity.cityName}**.
+- **Primary Hazard:** Storm drain silt congestion and backwater overflow risk (${currentCity.infrastructureRiskScore}% index).
+- **Vulnerability:** 12,000+ citizens directly in the low-lying basin contour.
+- **Remediation Action:** Expedite RCC box drain channeling and pre-monsoon desilting before heavy rainfall.`;
+        sources = ['Hydrodynamic Basin Model', 'District Health Audit', 'ULB Risk Matrix'];
+        actionLabel = 'Inspect GIS Risk Map';
         actionTab = 'risks';
-      } else if (lower.includes('₹5 crore') || lower.includes('5 cr') || lower.includes('allocated') || lower.includes('budget')) {
-        answer = `If ${currentCity.cityName} has **₹5 Crore** to allocate for maximum citizen impact:
-• **Drainage & Flood Defense (35% | ₹1.75 Cr):** Construct Ward 4 box drain and clear Ralegaon nullah outfall.
-• **Roads & Transit (30% | ₹1.50 Cr):** Resurface the main market arterial CC road corridor.
-• **Water Supply (20% | ₹1.00 Cr):** Extend feeder lines and automate elevated reservoir telemetry.
-• **Sanitation & SWM (10% | ₹50 Lakhs):** Expand mechanized trommel waste segregation.
-• **Smart Lighting (5% | ₹25 Lakhs):** Retrofit remaining dark corridors with automated LED poles.
+      } else if (lower.includes('10 crore') || lower.includes('10 cr') || lower.includes('₹10 crore')) {
+        answer = `If **${currentCity.cityName}** has **₹10 Crore** in available capital budget, AI recommends the following optimal allocation:
+• **Drainage & Flood Defense (35% | ₹3.50 Cr):** Modernize outfall box culverts in Ward 4 & 5.
+• **Roads & Transportation (30% | ₹3.00 Cr):** Asphalt resurfacing of key commercial freight corridors.
+• **Water Supply & Treatment (20% | ₹2.00 Cr):** Expand feeder lines and automated telemetry tanks.
+• **Sanitation & SWM (15% | ₹1.50 Cr):** Install mechanized segregation trommels and secondary collection bins.
 
-*Projected Impact:* Raises Development Score by **+9.4 points** and benefits **85,000+ citizens**.`;
-        sources = ['Pareto Capital Allocation Solver', 'CPHEEO Standards', '15th FC Tied Grants'];
+*Projected Impact:* Lifts City Development Score by **+11.2 points** and creates direct civic welfare for over **${Math.round(currentCity.totalPopulation * 0.85).toLocaleString('en-IN')} citizens**.`;
+        sources = ['Pareto Capital Optimizer', 'CPHEEO Standards', '15th FC Tied Grants'];
+        actionLabel = 'Test in Budget Simulator';
+        actionTab = 'overview';
+      } else if (lower.includes('5 crore') || lower.includes('5 cr') || lower.includes('allocated') || lower.includes('budget')) {
+        answer = `If **${currentCity.cityName}** has **₹5 Crore** to allocate:
+• **Drainage (35% | ₹1.75 Cr):** Construct Ward 4 box drain & culvert clearance.
+• **Roads (30% | ₹1.50 Cr):** Resurface main commercial market corridor.
+• **Water Supply (20% | ₹1.00 Cr):** Feeder pipeline expansion.
+• **Sanitation (15% | ₹0.75 Cr):** Solid waste collection machinery.
+
+*Projected Impact:* Raises Development Score by **+7.8 points** and benefits **12,000+ residents**.`;
+        sources = ['Pareto Capital Allocation Solver', 'CPHEEO Standards', '15th FC Grants'];
         actionLabel = 'Open Budget Simulator';
-        actionTab = 'budget';
+        actionTab = 'overview';
       } else {
-        answer = `Analysis for **${currentCity.cityName}**:
-The municipality is currently operating with a **Development Score of ${currentCity.developmentScore}/100** and **Infrastructure Risk at ${currentCity.infrastructureRiskScore}%**. Key focus areas this quarter include pre-monsoon drainage desilting and commercial road asphalt maintenance.`;
+        answer = `Intelligence summary for **${currentCity.cityName}**:
+Operating with a **Development Score of ${currentCity.developmentScore}/100**, **Infrastructure Health of ${currentCity.cityHealthScore}/100**, and **Risk at ${currentCity.infrastructureRiskScore}%**. Primary challenge: "${currentCity.currentProblems[0]}".`;
       }
 
       setMessages(prev => [

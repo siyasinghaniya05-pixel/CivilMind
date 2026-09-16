@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCivic } from '@/context/CivicContext';
 import { 
   Sparkles, 
@@ -17,7 +17,12 @@ import {
   Droplets,
   Layers,
   Milestone,
-  Waves
+  Sliders,
+  RotateCcw,
+  Building2,
+  Calendar,
+  Activity,
+  AlertTriangle
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -41,21 +46,91 @@ export const DashboardOverview: React.FC = () => {
     wards, 
     projects, 
     risks, 
-    departmentBudgets, 
     setActiveTab, 
-    setIsCityModalOpen 
+    setIsCityModalOpen,
+    setCurrentView
   } = useCivic();
 
-  // Top priorities requested by user
-  const topPriorities = [
+  // Interactive Budget Simulator Input state (Default ₹5 Crore as requested)
+  const [simulatorBudgetCr, setSimulatorBudgetCr] = useState<number>(5.0);
+
+  // Dynamic calculations for Budget Simulator based on selected budget
+  const budgetAllocation = useMemo(() => {
+    return [
+      { 
+        department: 'Drainage & Flood Defense', 
+        percentage: 35, 
+        amountCr: Number((simulatorBudgetCr * 0.35).toFixed(2)), 
+        color: '#2563eb',
+        impact: 'Halts monsoon waterlogging for 18,200 residents'
+      },
+      { 
+        department: 'Roads & Transportation', 
+        percentage: 30, 
+        amountCr: Number((simulatorBudgetCr * 0.30).toFixed(2)), 
+        color: '#0284c7',
+        impact: 'Re-surfaces 4.8 km of critical arterial market corridors'
+      },
+      { 
+        department: 'Water Supply & Pipelines', 
+        percentage: 20, 
+        amountCr: Number((simulatorBudgetCr * 0.20).toFixed(2)), 
+        color: '#0d9488',
+        impact: 'Stabilizes pressure for elevated residential pockets'
+      },
+      { 
+        department: 'Sanitation & SWM', 
+        percentage: 15, 
+        amountCr: Number((simulatorBudgetCr * 0.15).toFixed(2)), 
+        color: '#10b981',
+        impact: 'Expands wet & dry waste segregation trommels'
+      }
+    ];
+  }, [simulatorBudgetCr]);
+
+  // Dynamic AI insights tailored to the city
+  const aiInsights = useMemo(() => {
+    return [
+      {
+        id: 1,
+        title: 'Ward 4 shows the highest infrastructure risk.',
+        detail: `Critical storm drain backflow detected in low-lying basins. Remediation desilting is advised before heavy rainfall.`,
+        impact: '12,000 citizens benefited',
+        badge: 'High Priority',
+        badgeColor: 'bg-red-50 text-red-700 border-red-200/60',
+        action: 'View Risk Zone'
+      },
+      {
+        id: 2,
+        title: 'Drainage improvements could benefit approximately 12,000 citizens.',
+        detail: `Sanctioning ₹1.2 Cr RCC box drain along the Ralegaon outfall halts chronic waterlogging across Ward 4 and Ward 5.`,
+        impact: '₹1,000 per beneficiary',
+        badge: 'Maximum Impact',
+        badgeColor: 'bg-blue-50 text-blue-700 border-blue-200/60',
+        action: 'Inspect Drainage Tender'
+      },
+      {
+        id: 3,
+        title: 'Road maintenance should be prioritized before the monsoon season.',
+        detail: `Pavement Distress Index (PDI) dropped on the main commercial market route. Immediate bitumen sealing prevents heavy transit delays.`,
+        impact: '34,000 daily commuters',
+        badge: 'Seasonal Window',
+        badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+        action: 'Review Road Projects'
+      }
+    ];
+  }, [currentCity]);
+
+  // Priority Projects (exact requirements: #1 Drainage Upgrade, #2 Road Rehabilitation, #3 Water Supply Expansion)
+  const priorityProjects = [
     {
       rank: '#1',
       title: 'Drainage Upgrade',
       ward: 'Ward 4',
       impactScore: 95,
-      budget: '₹1.2 Cr',
-      citizens: '18,200',
-      tag: 'Critical Priority',
+      cost: '₹1.20 Cr',
+      citizens: '12,000 citizens',
+      status: 'High Urgency',
       tagColor: 'bg-red-50 text-red-700 border-red-200/60'
     },
     {
@@ -63,189 +138,237 @@ export const DashboardOverview: React.FC = () => {
       title: 'Road Rehabilitation',
       ward: 'Ward 2',
       impactScore: 89,
-      budget: '₹95 L',
-      citizens: '34,000',
-      tag: 'High Traffic Route',
+      cost: '₹95 Lakhs',
+      citizens: '34,000 citizens',
+      status: 'Transit Corridor',
       tagColor: 'bg-blue-50 text-blue-700 border-blue-200/60'
     },
     {
       rank: '#3',
-      title: 'Water Supply Upgrade',
+      title: 'Water Supply Expansion',
       ward: 'Ward 6',
       impactScore: 84,
-      budget: '₹65 L',
-      citizens: '12,500',
-      tag: 'Feeder Pipeline',
+      cost: '₹65 Lakhs',
+      citizens: '12,500 citizens',
+      status: 'Pressure Stabilizer',
       tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/60'
     }
   ];
 
-  // AI Insights requested by user
-  const aiInsights = [
+  // Top 3 Development Challenges
+  const topChallenges = [
     {
-      id: 1,
-      title: 'Drainage infrastructure requires immediate attention.',
-      detail: 'Monsoon elevation modeling predicts backwater inundation in Ward 4 and 5 low basins if outfall culvert desilting is delayed.',
-      impact: '18,200 citizens affected',
-      badge: 'High Impact',
-      action: 'View Drainage Tender'
+      num: '1',
+      title: 'Drainage Issues',
+      desc: 'Low-lying sectors and silt choked culverts causing severe storm runoff stagnation during monsoon surges.',
+      severity: 'Critical'
     },
     {
-      id: 2,
-      title: 'Ward 5 has the highest infrastructure risk.',
-      detail: 'Composite failure probability of 84% detected due to simultaneous open drain silting and storm runoff convergence.',
-      impact: '84% risk probability',
-      badge: 'Urgent Remediation',
-      action: 'Inspect Risk Map'
+      num: '2',
+      title: 'Road Deterioration',
+      desc: 'High pavement distress and pothole index along heavy freight commercial spines connecting to district highway.',
+      severity: 'High'
     },
     {
-      id: 3,
-      title: 'Road maintenance should be prioritized this quarter.',
-      detail: 'Pavement Distress Index (PDI) dropped below 40 on arterial commercial routes, driving up commuter transit delay by 35%.',
-      impact: '34,000 commuters',
-      badge: 'Economic Spine',
-      action: 'Review Road Budget'
-    }
-  ];
-
-  // Modern donut chart data
-  const donutData = [
-    { name: 'Roads', value: 30, amount: '₹11.5 Cr', color: '#2563eb' },
-    { name: 'Water', value: 25, amount: '₹9.6 Cr', color: '#0d9488' },
-    { name: 'Drainage', value: 35, amount: '₹13.4 Cr', color: '#0284c7' },
-    { name: 'Sanitation', value: 10, amount: '₹3.9 Cr', color: '#10b981' }
-  ];
-
-  // Kanban status grouping
-  const kanbanColumns = [
-    { 
-      status: 'Planned', 
-      count: projects.filter(p => p.status === 'Planned').length, 
-      items: projects.filter(p => p.status === 'Planned').slice(0, 2) 
-    },
-    { 
-      status: 'Active', 
-      count: projects.filter(p => p.status === 'In Progress' || p.status === 'Approved').length, 
-      items: projects.filter(p => p.status === 'In Progress' || p.status === 'Approved').slice(0, 3) 
-    },
-    { 
-      status: 'Delayed', 
-      count: projects.filter(p => p.status === 'Delayed').length, 
-      items: projects.filter(p => p.status === 'Delayed').slice(0, 2) 
-    },
-    { 
-      status: 'Completed', 
-      count: projects.filter(p => p.status === 'Completed').length, 
-      items: projects.filter(p => p.status === 'Completed').slice(0, 2) 
+      num: '3',
+      title: 'Water Supply Gaps',
+      desc: 'Uneven pressure distribution and aging trunk transmission lines in elevated residential neighborhoods.',
+      severity: 'Moderate'
     }
   ];
 
   return (
-    <div className="space-y-12 pb-16">
-      {/* 1. LARGE HERO SECTION */}
+    <div className="space-y-10 pb-16">
+      {/* 1. HEADER SECTION & AI WELCOME MESSAGE */}
       <section className="space-y-4 pt-2">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-medium text-zinc-700">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-              <span>AI-Powered Development Intelligence</span>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[11px] font-semibold text-blue-800">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>Selected Location</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950">
-              {currentCity.cityName}, {currentCity.state}
-            </h1>
-
-            <p className="text-sm text-zinc-500 max-w-xl">
-              Data-driven resource allocation, infrastructure hazard forecasting, and citizen impact modeling for municipal governance.
-            </p>
-          </div>
-
-          {/* City Health Score Prominent Badge */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center gap-4 shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 font-black text-xl">
-              82
-            </div>
-            <div>
-              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block">
-                City Health Score
+            <div className="flex items-baseline gap-3">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-950">
+                {currentCity.cityName}, {currentCity.state}
+              </h1>
+              <span className="text-xs font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
+                {currentCity.ulbType}
               </span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-bold text-zinc-950">82/100</span>
-                <span className="text-xs font-semibold text-emerald-600">+3.4 pts</span>
-              </div>
-              <p className="text-[11px] text-zinc-400 mt-0.5">Top 12% in state urban benchmark</p>
+            </div>
+
+            {/* AI Welcome Message requested by user */}
+            <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs text-zinc-700 leading-relaxed max-w-2xl flex items-start gap-2.5">
+              <Sparkles className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+              <p>
+                <strong className="text-zinc-950">Welcome to CivicMind AI.</strong> Based on <strong className="text-blue-600">{currentCity.cityName}</strong>'s infrastructure profile, we have identified the following development priorities.
+              </p>
             </div>
           </div>
+
+          {/* City Change Button */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentView('location-setup')}
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 transition-colors flex items-center gap-1.5"
+            >
+              <MapPin className="w-3.5 h-3.5 text-blue-600" />
+              <span>Switch City</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Core Metric Cards (Development Score, Infrastructure Health, Budget Efficiency, Risk Score) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+          {/* 1. City Development Score */}
+          <div className="modern-card p-5 space-y-3">
+            <div className="flex items-center justify-between text-zinc-400">
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                City Development Score
+              </span>
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-zinc-950">{currentCity.developmentScore}</span>
+              <span className="text-xs text-zinc-400">/100</span>
+            </div>
+            <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+              <div className="h-full bg-blue-600 rounded-full" style={{ width: `${currentCity.developmentScore}%` }} />
+            </div>
+            <p className="text-xs text-zinc-500">+4.2% lift vs last quarter</p>
+          </div>
+
+          {/* 2. Infrastructure Health Score */}
+          <div className="modern-card p-5 space-y-3">
+            <div className="flex items-center justify-between text-zinc-400">
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                Infrastructure Health Score
+              </span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-zinc-950">{currentCity.cityHealthScore}</span>
+              <span className="text-xs text-zinc-400">/100</span>
+            </div>
+            <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${currentCity.cityHealthScore}%` }} />
+            </div>
+            <p className="text-xs text-emerald-600 font-medium">Stable civic assets</p>
+          </div>
+
+          {/* 3. Budget Efficiency Score */}
+          <div className="modern-card p-5 space-y-3">
+            <div className="flex items-center justify-between text-zinc-400">
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                Budget Efficiency Score
+              </span>
+              <IndianRupee className="w-4 h-4 text-zinc-700" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-zinc-950">{currentCity.budgetEfficiencyScore}%</span>
+              <span className="text-xs text-emerald-600 font-semibold">Optimal</span>
+            </div>
+            <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+              <div className="h-full bg-zinc-900 rounded-full" style={{ width: `${currentCity.budgetEfficiencyScore}%` }} />
+            </div>
+            <p className="text-xs text-zinc-500">₹{currentCity.totalBudgetCr.toFixed(1)} Cr total budget</p>
+          </div>
+
+          {/* 4. Risk Score */}
+          <div className="modern-card p-5 space-y-3">
+            <div className="flex items-center justify-between text-zinc-400">
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                Risk Score
+              </span>
+              <ShieldAlert className="w-4 h-4 text-red-600" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-red-600">{currentCity.infrastructureRiskScore}%</span>
+              <span className="text-xs text-zinc-400 font-medium">Hazard Index</span>
+            </div>
+            <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+              <div className="h-full bg-red-500 rounded-full" style={{ width: `${currentCity.infrastructureRiskScore}%` }} />
+            </div>
+            <p className="text-xs text-zinc-500">3 areas flagged for maintenance</p>
+          </div>
         </div>
       </section>
 
-      {/* 2. FOUR LARGE METRIC CARDS */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Development Score */}
-        <div className="modern-card p-5 space-y-3">
-          <div className="flex items-center justify-between text-zinc-400">
-            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Development Score</span>
-            <TrendingUp className="w-4 h-4 text-blue-600" />
+      {/* 2. CITY OVERVIEW SECTION */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-zinc-700" />
+            <h2 className="text-base font-bold text-zinc-950">
+              City Overview & Profile
+            </h2>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-zinc-950">78</span>
-            <span className="text-xs text-zinc-400">/100</span>
-          </div>
-          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-600 rounded-full" style={{ width: '78%' }} />
-          </div>
-          <p className="text-xs text-zinc-500">+4.2% lift vs last quarter</p>
+          <span className="text-xs text-zinc-400">District: {currentCity.district}</span>
         </div>
 
-        {/* Infrastructure Risk */}
-        <div className="modern-card p-5 space-y-3">
-          <div className="flex items-center justify-between text-zinc-400">
-            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Infrastructure Risk</span>
-            <ShieldAlert className="w-4 h-4 text-emerald-600" />
+        {/* Overview Stats Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/80">
+            <span className="text-[11px] text-zinc-400 block font-medium uppercase">Population</span>
+            <span className="text-xl font-extrabold text-zinc-950">
+              {currentCity.totalPopulation.toLocaleString('en-IN')}
+            </span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-emerald-600">24%</span>
-            <span className="text-xs text-zinc-400 font-medium">Low Risk</span>
+          <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/80">
+            <span className="text-[11px] text-zinc-400 block font-medium uppercase">Total Area</span>
+            <span className="text-xl font-extrabold text-zinc-950">
+              {currentCity.areaSqKm} sq. km
+            </span>
           </div>
-          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
-            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '24%' }} />
+          <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/80">
+            <span className="text-[11px] text-zinc-400 block font-medium uppercase">Number of Wards</span>
+            <span className="text-xl font-extrabold text-zinc-950">
+              {currentCity.totalWards} Wards
+            </span>
           </div>
-          <p className="text-xs text-zinc-500">3 areas flagged for maintenance</p>
+          <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/80">
+            <span className="text-[11px] text-zinc-400 block font-medium uppercase">Infrastructure Summary</span>
+            <span className="text-xs font-semibold text-zinc-900 mt-1 block">
+              18.4 km Roads • 12 WTP Tanks • 920 LEDs
+            </span>
+          </div>
         </div>
 
-        {/* Budget Efficiency */}
+        {/* Top 3 Development Challenges */}
         <div className="modern-card p-5 space-y-3">
-          <div className="flex items-center justify-between text-zinc-400">
-            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Budget Efficiency</span>
-            <IndianRupee className="w-4 h-4 text-zinc-600" />
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+              Top 3 Development Challenges for {currentCity.cityName}
+            </h3>
+            <span className="text-[10px] text-zinc-400">Algorithmic diagnostic</span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-zinc-950">91%</span>
-            <span className="text-xs text-emerald-600 font-semibold">Optimal</span>
-          </div>
-          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
-            <div className="h-full bg-zinc-900 rounded-full" style={{ width: '91%' }} />
-          </div>
-          <p className="text-xs text-zinc-500">₹18.4 Cr committed capital</p>
-        </div>
 
-        {/* Citizens Impacted */}
-        <div className="modern-card p-5 space-y-3">
-          <div className="flex items-center justify-between text-zinc-400">
-            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Citizens Impacted</span>
-            <Users className="w-4 h-4 text-zinc-600" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {topChallenges.map((challenge) => (
+              <div key={challenge.num} className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200/70 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px]">
+                    {challenge.num}
+                  </span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                    challenge.severity === 'Critical' 
+                      ? 'bg-red-50 text-red-700 border border-red-200/60' 
+                      : challenge.severity === 'High'
+                      ? 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                      : 'bg-blue-50 text-blue-700 border border-blue-200/60'
+                  }`}>
+                    {challenge.severity}
+                  </span>
+                </div>
+                <h4 className="text-xs font-bold text-zinc-950">{challenge.title}</h4>
+                <p className="text-[11px] text-zinc-500 leading-relaxed">{challenge.desc}</p>
+              </div>
+            ))}
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-zinc-950">148,900</span>
-          </div>
-          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-600 rounded-full" style={{ width: '94%' }} />
-          </div>
-          <p className="text-xs text-zinc-500">94% municipal population coverage</p>
         </div>
       </section>
 
-      {/* 3. SECOND SECTION: AI INSIGHTS PANEL (Linear / Perplexity style) */}
+      {/* 3. AI INSIGHTS SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -254,7 +377,7 @@ export const DashboardOverview: React.FC = () => {
               AI Insights & Action Briefs
             </h2>
           </div>
-          <span className="text-xs text-zinc-400">Updated in real-time</span>
+          <span className="text-xs text-zinc-400">Dynamic location synthesis</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -265,7 +388,7 @@ export const DashboardOverview: React.FC = () => {
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200">
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${insight.badgeColor}`}>
                     {insight.badge}
                   </span>
                   <span className="text-[11px] text-zinc-400">{insight.impact}</span>
@@ -281,7 +404,7 @@ export const DashboardOverview: React.FC = () => {
               </div>
 
               <button
-                onClick={() => setActiveTab('overview')}
+                onClick={() => setActiveTab('risks')}
                 className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
               >
                 <span>{insight.action}</span>
@@ -292,19 +415,19 @@ export const DashboardOverview: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. THIRD SECTION: INTERACTIVE CITY MAP (Large Full-Width Clean Map) */}
+      {/* 4. INTERACTIVE MAP SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-zinc-700" />
             <h2 className="text-base font-bold text-zinc-950">
-              City Infrastructure & Risk Canvas
+              Interactive City Map – {currentCity.cityName}
             </h2>
           </div>
 
           <div className="flex items-center gap-3 text-xs text-zinc-500">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Wards
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Ward Boundaries
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-red-500" /> Risk Zones
@@ -334,7 +457,7 @@ export const DashboardOverview: React.FC = () => {
         </div>
       </section>
 
-      {/* 5. FOURTH SECTION: TOP DEVELOPMENT PRIORITIES */}
+      {/* 5. PRIORITY PROJECTS SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -347,7 +470,7 @@ export const DashboardOverview: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {topPriorities.map((item) => (
+          {priorityProjects.map((item) => (
             <div
               key={item.rank}
               className="modern-card p-5 space-y-4"
@@ -357,7 +480,7 @@ export const DashboardOverview: React.FC = () => {
                   {item.rank}
                 </span>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${item.tagColor}`}>
-                  {item.tag}
+                  {item.status}
                 </span>
               </div>
 
@@ -376,11 +499,11 @@ export const DashboardOverview: React.FC = () => {
                   <strong className="text-xs font-bold text-emerald-600">{item.impactScore}/100</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-zinc-400 uppercase block">Budget</span>
-                  <strong className="text-xs font-bold text-zinc-900">{item.budget}</strong>
+                  <span className="text-[10px] text-zinc-400 uppercase block">Cost</span>
+                  <strong className="text-xs font-bold text-zinc-900">{item.cost}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-zinc-400 uppercase block">Reach</span>
+                  <span className="text-[10px] text-zinc-400 uppercase block">Beneficiaries</span>
                   <strong className="text-xs font-bold text-zinc-900">{item.citizens}</strong>
                 </div>
               </div>
@@ -389,119 +512,119 @@ export const DashboardOverview: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. FIFTH SECTION: BUDGET SECTION (Modern Donut Chart & Allocation) */}
+      {/* 6. DYNAMIC BUDGET SIMULATOR SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <IndianRupee className="w-4 h-4 text-zinc-700" />
+            <Sliders className="w-4 h-4 text-blue-600" />
             <h2 className="text-base font-bold text-zinc-950">
-              Budget Allocation & Optimization
+              AI Budget Simulator
             </h2>
           </div>
-          <span className="text-xs text-zinc-500 font-mono">
-            Total Outlay: ₹{currentCity.totalBudgetCr.toFixed(1)} Cr
-          </span>
+          <span className="text-xs text-zinc-400">Dynamic Capital Optimization</span>
         </div>
 
-        <div className="modern-card p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          {/* Donut Chart (5 cols) */}
-          <div className="lg:col-span-5 h-56 flex items-center justify-center relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={65}
-                  outerRadius={90}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {donutData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#09090b', borderRadius: '8px', color: '#fff', fontSize: '11px', border: 'none' }}
-                  formatter={(val: any, name: any) => [`${val}% (${donutData.find(d => d.name === name)?.amount})`, name]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-extrabold text-zinc-950">100%</span>
-              <span className="text-[10px] text-zinc-400 uppercase font-medium">Allocated</span>
+        <div className="modern-card p-6 space-y-6">
+          {/* User Enters Available Budget */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-900 flex items-center gap-1.5">
+                <IndianRupee className="w-4 h-4 text-blue-600" />
+                <span>Enter Available Budget (Crores)</span>
+              </label>
+              <p className="text-[11px] text-zinc-500">
+                Adjust capital outlay to see AI automatic percentage allocation for {currentCity.cityName}.
+              </p>
             </div>
-          </div>
 
-          {/* Allocation Progress Breakdown (7 cols) */}
-          <div className="lg:col-span-7 space-y-4">
-            {donutData.map((item) => (
-              <div key={item.name} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="font-semibold text-zinc-800">{item.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-zinc-400">{item.amount}</span>
-                    <span className="font-bold text-zinc-950 font-mono">{item.value}%</span>
-                  </div>
-                </div>
-                <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. SIXTH SECTION: STARTUP PROJECT TRACKER (Linear-Style Kanban) */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-zinc-700" />
-            <h2 className="text-base font-bold text-zinc-950">
-              Project Execution Tracker
-            </h2>
-          </div>
-          <span className="text-xs text-zinc-400">Linear-style pipeline</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kanbanColumns.map((col) => (
-            <div key={col.status} className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70 space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-200/60">
-                <span className="text-xs font-bold text-zinc-800">{col.status}</span>
-                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white text-zinc-600 border border-zinc-200">
-                  {col.count}
-                </span>
-              </div>
-
-              <div className="space-y-2.5">
-                {col.items.map((proj) => (
-                  <div
-                    key={proj.id}
-                    className="p-3 rounded-lg bg-white border border-zinc-200 shadow-2xs hover:border-zinc-300 transition-all space-y-2"
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1">
+                {[2, 5, 10, 20].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => setSimulatorBudgetCr(preset)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium border ${
+                      simulatorBudgetCr === preset
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100'
+                    }`}
                   >
-                    <div className="flex items-center justify-between text-[10px]">
-                      <span className="text-zinc-400 font-mono">{proj.id}</span>
-                      <span className="font-bold text-zinc-900">₹{proj.budgetLakhs}L</span>
-                    </div>
-
-                    <h4 className="text-xs font-semibold text-zinc-900 line-clamp-2">
-                      {proj.title}
-                    </h4>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-500 pt-1 border-t border-zinc-100">
-                      <span>{proj.wardName}</span>
-                      <span className="font-semibold text-blue-600">{proj.completionPercentage}%</span>
-                    </div>
-                  </div>
+                    ₹{preset}Cr
+                  </button>
                 ))}
               </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-bold text-zinc-900">₹</span>
+                <input
+                  type="number"
+                  min="0.5"
+                  max="100"
+                  step="0.5"
+                  value={simulatorBudgetCr}
+                  onChange={(e) => setSimulatorBudgetCr(Number(e.target.value) || 1)}
+                  className="w-20 px-2.5 py-1.5 text-xs font-mono font-bold rounded-lg border border-zinc-300 bg-white text-zinc-900 text-right"
+                />
+                <span className="text-xs text-zinc-500">Cr</span>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* AI Automatically Suggests: Roads, Drainage, Water Supply, Sanitation */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            {/* Donut chart */}
+            <div className="lg:col-span-5 h-56 flex items-center justify-center relative">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={budgetAllocation}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={90}
+                    paddingAngle={3}
+                    dataKey="percentage"
+                  >
+                    {budgetAllocation.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#09090b', borderRadius: '8px', color: '#fff', fontSize: '11px', border: 'none' }}
+                    formatter={(val: any, name: any) => [`${val}%`, name]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-xl font-extrabold text-zinc-950">₹{simulatorBudgetCr} Cr</span>
+                <span className="text-[10px] text-zinc-400 uppercase font-medium">100% Allocated</span>
+              </div>
+            </div>
+
+            {/* Department Breakdown */}
+            <div className="lg:col-span-7 space-y-3.5">
+              {budgetAllocation.map((item) => (
+                <div key={item.department} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="font-semibold text-zinc-800">{item.department}</span>
+                    </div>
+                    <div className="flex items-center gap-2 font-mono">
+                      <span className="text-zinc-500">₹{item.amountCr} Cr</span>
+                      <span className="font-bold text-zinc-950 bg-zinc-100 px-1.5 py-0.5 rounded text-[11px]">
+                        {item.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${item.percentage}%`, backgroundColor: item.color }} />
+                  </div>
+                  <p className="text-[10px] text-zinc-400">{item.impact}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>

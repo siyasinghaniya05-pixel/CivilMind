@@ -14,6 +14,23 @@ export type TenantLevel = 'municipality' | 'district' | 'state';
 
 export type HeatmapMode = 'none' | 'flood' | 'roads' | 'deficiency' | 'priority';
 
+export type UserRole = 
+  | 'Chief Officer'
+  | 'Municipal Officer'
+  | 'Planner'
+  | 'Engineer'
+  | 'Administrator';
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  organization: string;
+  role: UserRole;
+  selectedCityId?: string;
+}
+
+export type AppView = 'landing' | 'auth' | 'location-setup' | 'dashboard';
+
 export interface WardData {
   id: number;
   number: number;

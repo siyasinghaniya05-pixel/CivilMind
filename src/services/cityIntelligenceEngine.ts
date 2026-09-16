@@ -3,6 +3,53 @@ import { WARDS_DATA, PROJECTS_DATA, INFRASTRUCTURE_RISKS, AI_RECOMMENDATIONS, DE
 
 export const PRE_INDEXED_CITIES: CityProfile[] = [
   {
+    id: 'kalamb-yavatmal',
+    cityName: 'Kalamb',
+    marathiName: 'कळंब',
+    state: 'Maharashtra',
+    district: 'Yavatmal District',
+    ulbType: 'Nagar Parishad',
+    ulbClass: 'Class B',
+    totalPopulation: 58420,
+    totalWards: 17,
+    areaSqKm: 14.8,
+    totalBudgetCr: 12.50,
+    lat: 20.4735,
+    lng: 78.3375,
+    cityHealthScore: 78,
+    developmentScore: 74,
+    budgetEfficiencyScore: 89,
+    infrastructureRiskScore: 32,
+    citizenSatisfactionScore: 81,
+    currentProblems: [
+      'Drainage Issues: Low-lying Ward 4 & 5 encounter severe monsoon storm stagnation',
+      'Road Deterioration: Main commercial road and market corridor exhibit high pothole index',
+      'Water Supply Gaps: Distribution pressure drops across elevated residential clusters'
+    ],
+    highRiskAreas: [
+      'Ward 4 (Indira Nagar primary drainage choke point)',
+      'Ward 5 (Godhani Nullah flood basin)',
+      'Ward 2 (Market Road asphalt rutting)'
+    ],
+    infrastructureGaps: [
+      'RCC Box Stormwater Drainage Channeling (1.8 km)',
+      'Arterial CC Road rehabilitation for commercial vehicles',
+      'Feeder pipeline extension to tail-end wards'
+    ],
+    budgetRecommendations: [
+      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 4.38 },
+      { department: 'Roads & Transport', percentage: 30, amountCr: 3.75 },
+      { department: 'Water Supply', percentage: 20, amountCr: 2.50 },
+      { department: 'Sanitation & SWM', percentage: 10, amountCr: 1.25 },
+      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.62 }
+    ],
+    topDevelopmentPriorities: [
+      '#1 Drainage Upgrade – Ward 4 (Impact Score: 95)',
+      '#2 Road Rehabilitation – Ward 2 (Impact Score: 89)',
+      '#3 Water Supply Expansion – Ward 6 (Impact Score: 84)'
+    ]
+  },
+  {
     id: 'yavatmal-hq',
     cityName: 'Yavatmal',
     marathiName: 'यवतमाळ',
@@ -16,16 +63,15 @@ export const PRE_INDEXED_CITIES: CityProfile[] = [
     totalBudgetCr: 38.40,
     lat: 20.3888,
     lng: 78.1204,
-    cityHealthScore: 82, // Requested by user: 82/100
+    cityHealthScore: 82,
     developmentScore: 78,
     budgetEfficiencyScore: 91,
-    infrastructureRiskScore: 24, // 24% Low Risk
+    infrastructureRiskScore: 24,
     citizenSatisfactionScore: 84,
     currentProblems: [
       'Drainage infrastructure requires immediate attention in low-lying sectors',
       'Ward 5 has the highest infrastructure risk due to nullah backflow',
-      'Road maintenance should be prioritized this quarter along commercial corridors',
-      'Water pressure variance between elevated and valley neighborhoods'
+      'Road maintenance should be prioritized this quarter along commercial corridors'
     ],
     highRiskAreas: [
       'Ward 5 (Godhani Nullah flood basin)',
@@ -47,55 +93,142 @@ export const PRE_INDEXED_CITIES: CityProfile[] = [
     topDevelopmentPriorities: [
       '#1 Drainage Upgrade – Ward 4 (Impact Score: 95)',
       '#2 Road Rehabilitation – Ward 2 (Impact Score: 89)',
-      '#3 Water Supply Upgrade – Ward 6 (Impact Score: 84)',
-      '#4 Solid Waste MRF Modernization – Ward 17 (Impact Score: 80)',
-      '#5 Smart LED Lighting Network – Ward 5 (Impact Score: 78)'
+      '#3 Water Supply Upgrade – Ward 6 (Impact Score: 84)'
     ]
   },
   {
-    id: 'kalamb-yavatmal',
-    cityName: 'Kalamb',
-    marathiName: 'कळंब',
+    id: 'wardha-city',
+    cityName: 'Wardha',
+    marathiName: 'वर्धा',
     state: 'Maharashtra',
-    district: 'Yavatmal District',
-    ulbType: 'Nagar Parishad',
-    ulbClass: 'Class B',
-    totalPopulation: 58420,
-    totalWards: 17,
-    areaSqKm: 14.8,
-    totalBudgetCr: 12.50,
-    lat: 20.4735,
-    lng: 78.3375,
-    cityHealthScore: 74,
-    developmentScore: 68,
-    budgetEfficiencyScore: 82,
-    infrastructureRiskScore: 38,
-    citizenSatisfactionScore: 76,
+    district: 'Wardha District',
+    ulbType: 'Municipal Council',
+    ulbClass: 'Class A',
+    totalPopulation: 112500,
+    totalWards: 22,
+    areaSqKm: 24.2,
+    totalBudgetCr: 29.80,
+    lat: 20.7453,
+    lng: 78.6022,
+    cityHealthScore: 80,
+    developmentScore: 76,
+    budgetEfficiencyScore: 88,
+    infrastructureRiskScore: 28,
+    citizenSatisfactionScore: 82,
     currentProblems: [
-      'Drainage infrastructure requires immediate attention in Ward 4',
-      'Ward 4 has the highest infrastructure risk of monsoon waterlogging',
-      'Road maintenance should be prioritized on the MIDC heavy vehicle route'
+      'Railway crossing drainage overflow during flash cloudbursts',
+      'Sevagram heritage road needs surface sealing & pedestrian walkways',
+      'Solid waste segregation facility capacity constraints'
     ],
     highRiskAreas: [
-      'Ward 4 (Indira Nagar flood basin)',
-      'Ward 3 (Ambedkar Nagar silt choke)',
-      'Ward 17 (MIDC industrial route rutting)'
+      'Ward 6 (Railway colony culvert)',
+      'Ward 9 (Civil Hospital drainage junction)'
     ],
     infrastructureGaps: [
-      'RCC box drain along Ralegaon stream',
-      'Underground sewage pipeline network in Ward 3'
+      'Underground storm drain trunk line',
+      'Decentralized sewage treatment plant'
     ],
     budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 4.38 },
-      { department: 'Roads & Transport', percentage: 28, amountCr: 3.50 },
-      { department: 'Water Supply', percentage: 22, amountCr: 2.75 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 1.25 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.62 }
+      { department: 'Drainage & Sewerage', percentage: 32, amountCr: 9.54 },
+      { department: 'Roads & Transport', percentage: 32, amountCr: 9.54 },
+      { department: 'Water Supply', percentage: 22, amountCr: 6.56 },
+      { department: 'Sanitation & SWM', percentage: 9, amountCr: 2.68 },
+      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 1.49 }
     ],
     topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 4 (Impact Score: 96)',
-      '#2 Road Rehabilitation – Ward 2 (Impact Score: 89)',
-      '#3 Water Supply Upgrade – Ward 11 (Impact Score: 85)'
+      '#1 Drainage Upgrade – Ward 6 (Impact Score: 93)',
+      '#2 Road Rehabilitation – Ward 3 (Impact Score: 88)',
+      '#3 Water Supply Upgrade – Ward 8 (Impact Score: 82)'
+    ]
+  },
+  {
+    id: 'jejuri-pune',
+    cityName: 'Jejuri',
+    marathiName: 'जेजुरी',
+    state: 'Maharashtra',
+    district: 'Pune District',
+    ulbType: 'Nagar Parishad',
+    ulbClass: 'Class C',
+    totalPopulation: 34200,
+    totalWards: 15,
+    areaSqKm: 11.2,
+    totalBudgetCr: 8.60,
+    lat: 18.2778,
+    lng: 74.1594,
+    cityHealthScore: 76,
+    developmentScore: 71,
+    budgetEfficiencyScore: 85,
+    infrastructureRiskScore: 35,
+    citizenSatisfactionScore: 79,
+    currentProblems: [
+      'Pilgrimage peak crowd sanitation and temporary drainage stress',
+      'Old hill-foot water distribution pipe corrosion',
+      'Temple approach road bottlenecks during annual Yatras'
+    ],
+    highRiskAreas: [
+      'Ward 3 (Khandoba Mandir foothill basin)',
+      'Ward 7 (Bus stand storm runoff)'
+    ],
+    infrastructureGaps: [
+      'High-capacity storm drain for temple steps runoff',
+      'Automated water pumping and reservoir monitoring'
+    ],
+    budgetRecommendations: [
+      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 3.01 },
+      { department: 'Roads & Transport', percentage: 30, amountCr: 2.58 },
+      { department: 'Water Supply', percentage: 20, amountCr: 1.72 },
+      { department: 'Sanitation & SWM', percentage: 10, amountCr: 0.86 },
+      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.43 }
+    ],
+    topDevelopmentPriorities: [
+      '#1 Drainage Upgrade – Ward 3 (Impact Score: 94)',
+      '#2 Road Rehabilitation – Ward 1 (Impact Score: 87)',
+      '#3 Water Supply Expansion – Ward 5 (Impact Score: 83)'
+    ]
+  },
+  {
+    id: 'pune-metro',
+    cityName: 'Pune',
+    marathiName: 'पुणे',
+    state: 'Maharashtra',
+    district: 'Pune District',
+    ulbType: 'Municipal Corporation',
+    ulbClass: 'Class A+',
+    totalPopulation: 3850000,
+    totalWards: 41,
+    areaSqKm: 331.2,
+    totalBudgetCr: 845.00,
+    lat: 18.5204,
+    lng: 73.8567,
+    cityHealthScore: 86,
+    developmentScore: 84,
+    budgetEfficiencyScore: 92,
+    infrastructureRiskScore: 22,
+    citizenSatisfactionScore: 88,
+    currentProblems: [
+      'Mutha riverbank flood management and siltation',
+      'Arterial bus rapid transit junction bottleneck points',
+      'Underground utility mapping reconciliation'
+    ],
+    highRiskAreas: [
+      'Ward 12 (Shivajinagar low water table)',
+      'Ward 24 (Hadapsar transit intersection)'
+    ],
+    infrastructureGaps: [
+      'Sensor-based stormwater flood gate automation',
+      'Smart grid LED street lighting retrofits'
+    ],
+    budgetRecommendations: [
+      { department: 'Roads & Transport', percentage: 35, amountCr: 295.75 },
+      { department: 'Drainage & Sewerage', percentage: 30, amountCr: 253.50 },
+      { department: 'Water Supply', percentage: 20, amountCr: 169.00 },
+      { department: 'Sanitation & SWM', percentage: 10, amountCr: 84.50 },
+      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 42.25 }
+    ],
+    topDevelopmentPriorities: [
+      '#1 Drainage Upgrade – Ward 12 (Impact Score: 97)',
+      '#2 Road Rehabilitation – Ward 7 (Impact Score: 91)',
+      '#3 Water Supply Modernization – Ward 18 (Impact Score: 86)'
     ]
   }
 ];

@@ -11,7 +11,10 @@ import {
   AiAgentMessage,
   CityProfile,
   TenantLevel,
-  HeatmapMode
+  HeatmapMode,
+  AppView,
+  UserProfile,
+  UserRole
 } from '@/types';
 import { 
   CITY_STATS, 
@@ -61,6 +64,12 @@ interface CivicContextType {
   setHeatmapMode: (mode: HeatmapMode) => void;
   isCityModalOpen: boolean;
   setIsCityModalOpen: (open: boolean) => void;
+  currentView: AppView;
+  setCurrentView: (view: AppView) => void;
+  user: UserProfile | null;
+  loginUser: (profile: UserProfile) => void;
+  logoutUser: () => void;
+  completeLocationSetup: (profile: CityProfile) => void;
   switchCity: (profile: CityProfile) => void;
   searchAndSetCity: (cityName: string, coords?: { lat: number; lng: number }) => void;
   stats: MunicipalCityStats;
@@ -94,8 +103,40 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('none');
   const [isCityModalOpen, setIsCityModalOpen] = useState<boolean>(false);
 
+  // App View & User Authentication State
+  const [currentView, setCurrentView] = useState<AppView>('landing');
+  const [user, setUser] = useState<UserProfile | null>({
+    name: 'Rajesh Patil',
+    email: 'chief.officer@kalamb.gov.in',
+    organization: 'Kalamb Nagar Parishad',
+    role: 'Chief Officer',
+    selectedCityId: 'kalamb-yavatmal'
+  });
+
   // Active City Profile (Default: Kalamb)
   const [currentCity, setCurrentCity] = useState<CityProfile>(PRE_INDEXED_CITIES[0]);
+
+  const loginUser = (profile: UserProfile) => {
+    setUser(profile);
+    setCurrentView('location-setup');
+  };
+
+  const logoutUser = () => {
+    setUser(null);
+    setCurrentView('landing');
+  };
+
+  const completeLocationSetup = (profile: CityProfile) => {
+    switchCity(profile);
+    setUser((prev: UserProfile | null) => prev ? { ...prev, selectedCityId: profile.id } : {
+      name: 'Guest Officer',
+      email: 'officer@ulb.gov.in',
+      organization: `${profile.cityName} ${profile.ulbType}`,
+      role: 'Chief Officer',
+      selectedCityId: profile.id
+    });
+    setCurrentView('dashboard');
+  };
 
   const [stats, setStats] = useState<MunicipalCityStats>(CITY_STATS);
   const [wards, setWards] = useState<WardData[]>(WARDS_DATA);
@@ -277,6 +318,12 @@ Average WDI: ${currentCity.developmentScore}/100 across ${currentCity.totalWards
   return (
     <CivicContext.Provider
       value={{
+        currentView,
+        setCurrentView,
+        user,
+        loginUser,
+        logoutUser,
+        completeLocationSetup,
         activeTab,
         setActiveTab,
         isDarkMode,

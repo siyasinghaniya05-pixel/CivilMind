@@ -25,10 +25,28 @@ import { AnnualDevelopmentPlan } from '@/components/wow/AnnualDevelopmentPlan';
 import { NewProjectModal } from '@/components/modals/NewProjectModal';
 import { CitySelectorModal } from '@/components/common/CitySelectorModal';
 import { FloatingAiAssistant } from '@/components/common/FloatingAiAssistant';
+import { LandingPage } from '@/components/landing/LandingPage';
+import { AuthPage } from '@/components/auth/AuthPage';
+import { LocationSetupPage } from '@/components/onboarding/LocationSetupPage';
 
 export default function HomePage() {
-  const { activeTab, isCityModalOpen, setIsCityModalOpen } = useCivic();
+  const { activeTab, isCityModalOpen, setIsCityModalOpen, currentView } = useCivic();
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+
+  // Page 1: Landing Page
+  if (currentView === 'landing') {
+    return <LandingPage />;
+  }
+
+  // Page 2: Auth Page (Login / Register)
+  if (currentView === 'auth') {
+    return <AuthPage />;
+  }
+
+  // Page 3: Location Setup (Onboarding)
+  if (currentView === 'location-setup') {
+    return <LocationSetupPage />;
+  }
 
   const renderActiveModule = () => {
     switch (activeTab) {
