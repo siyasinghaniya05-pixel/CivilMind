@@ -230,6 +230,51 @@ export const PRE_INDEXED_CITIES: CityProfile[] = [
       '#2 Road Rehabilitation – Ward 7 (Impact Score: 91)',
       '#3 Water Supply Modernization – Ward 18 (Impact Score: 86)'
     ]
+  },
+  {
+    id: 'pandharkawda-yavatmal',
+    cityName: 'Pandharkawda',
+    marathiName: 'पांढरकवडा',
+    state: 'Maharashtra',
+    district: 'Yavatmal District',
+    ulbType: 'Nagar Parishad',
+    ulbClass: 'Class C',
+    totalPopulation: 38200,
+    totalWards: 16,
+    areaSqKm: 12.4,
+    totalBudgetCr: 9.80,
+    lat: 20.0248,
+    lng: 78.5322,
+    cityHealthScore: 75,
+    developmentScore: 71,
+    budgetEfficiencyScore: 86,
+    infrastructureRiskScore: 34,
+    citizenSatisfactionScore: 78,
+    currentProblems: [
+      'National Highway 44 junction drainage overflow during heavy cloudbursts',
+      'Old iron pipeline leakage leading to localized water shortages',
+      'Solid waste dumping ground bio-mining requirements'
+    ],
+    highRiskAreas: [
+      'Ward 3 (NH-44 bypass drainage bottleneck)',
+      'Ward 8 (Subhash Nagar low line water logging)'
+    ],
+    infrastructureGaps: [
+      'Concrete roadside box drains along bypass feeder',
+      'Automated chlorine dosing and overhead reservoir telemetry'
+    ],
+    budgetRecommendations: [
+      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 3.43 },
+      { department: 'Roads & Transport', percentage: 30, amountCr: 2.94 },
+      { department: 'Water Supply', percentage: 20, amountCr: 1.96 },
+      { department: 'Sanitation & SWM', percentage: 10, amountCr: 0.98 },
+      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.49 }
+    ],
+    topDevelopmentPriorities: [
+      '#1 Drainage Channeling – Ward 3 (Impact Score: 94)',
+      '#2 Highway Feeder Road Overlay – Ward 5 (Impact Score: 88)',
+      '#3 WTP Pumping Automation – Ward 8 (Impact Score: 83)'
+    ]
   }
 ];
 
