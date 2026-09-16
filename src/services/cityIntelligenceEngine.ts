@@ -6,7 +6,7 @@ import { CityProfile, WardData, Project, InfrastructureRisk, DepartmentBudget, A
  */
 export function generateCityIntelligence(
   inputName: string,
-  customCoords?: { lat: number; lng: number }
+  customCoords?: { lat?: number; lng?: number; district?: string; state?: string }
 ): {
   profile: CityProfile;
   wards: WardData[];
@@ -22,8 +22,8 @@ export function generateCityIntelligence(
   // Coordinate and regional metadata resolution (100% dynamic procedural generation)
   let lat = Number((18.5 + ((nameHash % 400) / 100)).toFixed(4));
   let lng = Number((74.0 + ((nameHash % 500) / 100)).toFixed(4));
-  let state = 'Maharashtra';
-  let district = `${cleanName} District`;
+  let state = customCoords?.state || 'Maharashtra';
+  let district = customCoords?.district || `${cleanName} District`;
   let ulbType: CityProfile['ulbType'] = (nameHash % 3 === 0) 
     ? 'Municipal Council' 
     : (nameHash % 3 === 1) 

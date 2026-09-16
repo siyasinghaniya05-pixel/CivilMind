@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { CivicProvider } from "@/context/CivicContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "CivicMind AI | Municipal Development Intelligence Platform",
-  description: "AI-Powered Development Intelligence Platform for Small Cities, Nagar Parishads, Nagar Panchayats, and District Administrations. Making every rupee of public money create maximum public impact.",
+  title: "CivicMind AI | National Development Intelligence Platform",
+  description: "AI-Powered Development Intelligence Platform for Local Government Bodies, Nagar Parishads, Nagar Panchayats, and District Administrations.",
 };
 
 export default function RootLayout({
@@ -26,9 +30,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+      <body className="min-h-full flex flex-col font-sans bg-[#F8FAFC] text-[#52606D] antialiased">
         <CivicProvider>
           {children}
         </CivicProvider>

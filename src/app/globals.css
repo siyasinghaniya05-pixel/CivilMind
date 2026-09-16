@@ -2,27 +2,120 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --background: #fafafa;
-  --foreground: #09090b;
+  /* Official Government Text Color System */
+  --text-primary-heading: #102A43;
+  --text-secondary-heading: #243B53;
+  --text-body: #52606D;
+  --text-muted: #7B8794;
+  --text-gov-label: #1E3A5F;
+  --accent-primary: #145DA0;
+  --accent-secondary: #167D9A;
+  --color-success: #16866B;
+  --color-warning: #B7791F;
+  --color-critical: #C53030;
+  --color-links: #145DA0;
+
+  --background: #F8FAFC;
+  --foreground: #52606D;
   --card: #ffffff;
-  --card-foreground: #09090b;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #10b981;
-  --secondary-foreground: #ffffff;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --border: #e4e4e7;
-  --ring: #2563eb;
+  --card-foreground: #102A43;
+  --border: #E2E8F0;
 }
 
 body {
   background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  letter-spacing: -0.011em;
+  color: var(--text-body);
+  font-family: var(--font-plus-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-plus-jakarta), 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary-heading);
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 700;
+}
+
+h3 {
+  font-weight: 600;
+}
+
+/* Official Government Labels Font & Color Utility */
+.font-gov-label {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  color: var(--text-gov-label);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.font-gov-body {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+/* Specific text color utilities */
+.text-heading-primary {
+  color: #102A43;
+}
+
+.text-heading-secondary {
+  color: #243B53;
+}
+
+.text-gov-body {
+  color: #52606D;
+}
+
+.text-gov-muted {
+  color: #7B8794;
+}
+
+.text-gov-label {
+  color: #1E3A5F;
+}
+
+.text-accent-primary {
+  color: #145DA0;
+}
+
+.text-accent-secondary {
+  color: #167D9A;
+}
+
+.text-state-success {
+  color: #16866B;
+}
+
+.text-state-warning {
+  color: #B7791F;
+}
+
+.text-state-critical {
+  color: #C53030;
+}
+
+/* Background utilities */
+.bg-accent-primary {
+  background-color: #145DA0;
+}
+
+.bg-accent-primary-hover:hover {
+  background-color: #0E4477;
+}
+
+.border-gov-subtle {
+  border-color: #E2E8F0;
 }
 
 /* Subtle sleek scrollbars */
@@ -36,30 +129,30 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #94a3b8;
 }
 
 /* Modern clean Leaflet container */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 1rem;
-  background: #f4f4f5;
+  border-radius: 0.75rem;
+  background: #f1f5f9;
   font-family: inherit;
   z-index: 10;
 }
 
 .leaflet-popup-content-wrapper {
   background: #ffffff;
-  color: #09090b;
-  border-radius: 0.875rem;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e4e4e7;
+  color: #102A43;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(16, 42, 67, 0.12), 0 4px 10px -2px rgba(16, 42, 67, 0.06);
+  border: 1px solid #e2e8f0;
   padding: 0;
 }
 
@@ -68,81 +161,13 @@ body {
   line-height: 1.4;
 }
 
-/* Modern subtle card styling */
-.modern-card {
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
-  border-radius: 1rem;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
 }
 
-.modern-card:hover {
-  border-color: #d4d4d8;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Glassmorphism & Vibrant Modern Startup Effects */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(228, 228, 231, 0.6);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
-}
-
-.dark-glass-card {
-  background: rgba(9, 9, 11, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-.gradient-text-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 50%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-secondary {
-  background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.animated-gradient-bg {
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes floatAlt {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-}
-
-.animate-float {
-  animation: floatSlow 6s ease-in-out infinite;
-}
-
-.animate-float-alt {
-  animation: floatAlt 7s ease-in-out infinite 1s;
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
 }
