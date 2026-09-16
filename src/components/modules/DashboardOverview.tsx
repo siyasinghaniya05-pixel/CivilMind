@@ -22,7 +22,8 @@ import {
   Building2,
   Calendar,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  Compass
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -103,7 +104,7 @@ export const DashboardOverview: React.FC = () => {
       {
         id: 2,
         title: 'Drainage improvements could benefit approximately 12,000 citizens.',
-        detail: `Sanctioning ₹1.2 Cr RCC box drain along the Ralegaon outfall halts chronic waterlogging across Ward 4 and Ward 5.`,
+        detail: `Sanctioning ₹1.2 Cr RCC box drain along the primary stormwater outfall halts chronic waterlogging across Ward 4 and Ward 5.`,
         impact: '₹1,000 per beneficiary',
         badge: 'Maximum Impact',
         badgeColor: 'bg-blue-50 text-blue-700 border-blue-200/60',
@@ -176,6 +177,29 @@ export const DashboardOverview: React.FC = () => {
       severity: 'Moderate'
     }
   ];
+
+  if (!currentCity) {
+    return (
+      <div className="min-h-[55vh] flex flex-col items-center justify-center text-center p-8 bg-white rounded-3xl border border-zinc-200/80 shadow-xs max-w-lg mx-auto my-12 space-y-5">
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <MapPin className="w-7 h-7" />
+        </div>
+        <div className="space-y-1.5">
+          <h2 className="text-2xl font-black text-zinc-950">Select Your Municipality</h2>
+          <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
+            CivicMind AI generates infrastructure intelligence dynamically for any selected city or town. Please choose your location to initialize your dashboard.
+          </p>
+        </div>
+        <button
+          onClick={() => setCurrentView('location-setup')}
+          className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs flex items-center gap-2 transition-all"
+        >
+          <Compass className="w-4 h-4" />
+          <span>Select Location</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10 pb-16">

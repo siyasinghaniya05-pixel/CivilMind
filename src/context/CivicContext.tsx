@@ -57,7 +57,7 @@ interface CivicContextType {
   setActiveTab: (tab: ActiveTab) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  currentCity: CityProfile;
+  currentCity: CityProfile | null;
   tenantLevel: TenantLevel;
   setTenantLevel: (level: TenantLevel) => void;
   heatmapMode: HeatmapMode;
@@ -105,16 +105,10 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // App View & User Authentication State
   const [currentView, setCurrentView] = useState<AppView>('landing');
-  const [user, setUser] = useState<UserProfile | null>({
-    name: 'Rajesh Patil',
-    email: 'chief.officer@kalamb.gov.in',
-    organization: 'Kalamb Nagar Parishad',
-    role: 'Chief Officer',
-    selectedCityId: 'kalamb-yavatmal'
-  });
+  const [user, setUser] = useState<UserProfile | null>(null);
 
-  // Active City Profile (Default: Kalamb)
-  const [currentCity, setCurrentCity] = useState<CityProfile>(PRE_INDEXED_CITIES[0]);
+  // Active City Profile (Null by default until user selects a location)
+  const [currentCity, setCurrentCity] = useState<CityProfile | null>(null);
 
   const loginUser = (profile: UserProfile) => {
     setUser(profile);
@@ -123,13 +117,14 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const logoutUser = () => {
     setUser(null);
+    setCurrentCity(null);
     setCurrentView('landing');
   };
 
   const completeLocationSetup = (profile: CityProfile) => {
     switchCity(profile);
     setUser((prev: UserProfile | null) => prev ? { ...prev, selectedCityId: profile.id } : {
-      name: 'Guest Officer',
+      name: 'Municipal Official',
       email: 'officer@ulb.gov.in',
       organization: `${profile.cityName} ${profile.ulbType}`,
       role: 'Chief Officer',
@@ -139,9 +134,9 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const [stats, setStats] = useState<MunicipalCityStats>(CITY_STATS);
-  const [wards, setWards] = useState<WardData[]>(WARDS_DATA);
-  const [projects, setProjects] = useState<Project[]>(PROJECTS_DATA);
-  const [risks, setRisks] = useState<InfrastructureRisk[]>(INFRASTRUCTURE_RISKS);
+  const [wards, setWards] = useState<WardData[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [risks, setRisks] = useState<InfrastructureRisk[]>([]);
   const [departmentBudgets, setDepartmentBudgets] = useState<DepartmentBudget[]>(DEPARTMENT_BUDGETS);
   const [aiRecommendations, setAiRecommendations] = useState<AiRecommendation[]>(AI_RECOMMENDATIONS);
   const [selectedWard, setSelectedWard] = useState<WardData | null>(null);
@@ -153,7 +148,7 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       id: 'msg-1',
       sender: 'agent',
       agentType: 'budget',
-      content: `Namaskar Chief Officer! I have loaded the municipal intelligence profile for ${currentCity.cityName} ${currentCity.ulbType} (${currentCity.district}). How can I assist with your development planning today?`,
+      content: `Namaskar Officer! Welcome to CivicMind AI. Please select your municipality to load real-time spatial development intelligence, infrastructure risk predictions, and budget optimizations.`,
       timestamp: 'Today, 09:15 AM'
     }
   ]);
@@ -230,7 +225,8 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const addProject = (newProj: Omit<Project, 'id'>) => {
-    const id = `PRJ-${currentCity.cityName.slice(0, 3).toUpperCase()}-${String(projects.length + 1).padStart(3, '0')}`;
+    const cityPrefix = currentCity ? currentCity.cityName.slice(0, 3).toUpperCase() : 'ULB';
+    const id = `PRJ-${cityPrefix}-${String(projects.length + 1).padStart(3, '0')}`;
     const projectWithId: Project = { ...newProj, id };
     setProjects((prev) => [projectWithId, ...prev]);
   };
@@ -272,31 +268,42 @@ export const CivicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setAgentMessages((prev) => [...prev, userMsg]);
 
     setTimeout(() => {
+      const cName = currentCity?.cityName || 'Selected Municipality';
+      const cType = currentCity?.ulbType || 'Municipal Council';
+      const cBudgetRecs = currentCity?.budgetRecommendations || [];
+      const cHighRisks = currentCity?.highRiskAreas || ['Ward 4 low-lying storm drain basin', 'Commercial market road'];
+      const cProblems = currentCity?.currentProblems || ['Seasonal storm waterlogging', 'Road pavement wear'];
+      const cPriorities = currentCity?.topDevelopmentPriorities || ['Stormwater Box Drain', 'Corridor Road Resurfacing', 'Water Supply Expansion'];
+      const cGaps = currentCity?.infrastructureGaps || ['Drainage silt choke points', 'Water pipeline pressure drop'];
+      const cScore = currentCity?.developmentScore || 74;
+      const cWards = currentCity?.totalWards || 18;
+      const cBudget = currentCity?.totalBudgetCr || 14.5;
+
       let reply = '';
       if (agentType === 'budget') {
-        reply = `Budget Analysis for ${currentCity.cityName} ${currentCity.ulbType}:
+        reply = `Budget Analysis for ${cName} ${cType}:
 Recommended Capital Split:
-• Drainage & Flood Defense: ${currentCity.budgetRecommendations[0]?.percentage || 35}% (₹${currentCity.budgetRecommendations[0]?.amountCr || 3.5} Cr)
-• Roads & Transit Mobility: ${currentCity.budgetRecommendations[1]?.percentage || 25}% (₹${currentCity.budgetRecommendations[1]?.amountCr || 2.5} Cr)
-• Water Security & Telemetry: ${currentCity.budgetRecommendations[2]?.percentage || 20}% (₹${currentCity.budgetRecommendations[2]?.amountCr || 2.0} Cr)
+• Drainage & Flood Defense: ${cBudgetRecs[0]?.percentage || 35}% (₹${cBudgetRecs[0]?.amountCr || (cBudget * 0.35).toFixed(2)} Cr)
+• Roads & Transit Mobility: ${cBudgetRecs[1]?.percentage || 25}% (₹${cBudgetRecs[1]?.amountCr || (cBudget * 0.25).toFixed(2)} Cr)
+• Water Security & Telemetry: ${cBudgetRecs[2]?.percentage || 20}% (₹${cBudgetRecs[2]?.amountCr || (cBudget * 0.20).toFixed(2)} Cr)
 • SWM & Energy Savings: 20%
 Estimated unspent 15th FC tied grant compliance: 84.5%.`;
       } else if (agentType === 'risk') {
-        reply = `Hazard & Vulnerability Audit for ${currentCity.cityName}:
+        reply = `Hazard & Vulnerability Audit for ${cName}:
 Identified Vulnerable Hotspots:
-${currentCity.highRiskAreas.map((a, i) => `${i + 1}. ${a}`).join('\n')}
-Priority Action: ${currentCity.currentProblems[0]}.`;
+${cHighRisks.map((a, i) => `${i + 1}. ${a}`).join('\n')}
+Priority Action: ${cProblems[0]}.`;
       } else if (agentType === 'priority') {
-        reply = `Development Priority Agent Ranking for ${currentCity.cityName}:
-${currentCity.topDevelopmentPriorities.slice(0, 5).map((p, i) => `${i + 1}. ${p}`).join('\n')}`;
+        reply = `Development Priority Agent Ranking for ${cName}:
+${cPriorities.slice(0, 5).map((p, i) => `${i + 1}. ${p}`).join('\n')}`;
       } else if (agentType === 'infra') {
-        reply = `Infrastructure Asset Diagnostics for ${currentCity.cityName}:
+        reply = `Infrastructure Asset Diagnostics for ${cName}:
 Identified Infrastructure Gaps:
-${currentCity.infrastructureGaps.map((g, i) => `• ${g}`).join('\n')}
-Average WDI: ${currentCity.developmentScore}/100 across ${currentCity.totalWards} wards.`;
+${cGaps.map((g, i) => `• ${g}`).join('\n')}
+Average WDI: ${cScore}/100 across ${cWards} wards.`;
       } else {
-        reply = `Drafting Council Resolution for ${currentCity.cityName} Municipal Council:
-"Resolved that administrative approval of ₹${(currentCity.totalBudgetCr * 0.25).toFixed(2)} Cr is hereby granted for priority capital infrastructure works in ${currentCity.cityName} to mitigate critical flood and road deterioration risks."`;
+        reply = `Drafting Council Resolution for ${cName} ${cType}:
+"Resolved that administrative approval of ₹${(cBudget * 0.25).toFixed(2)} Cr is hereby granted for priority capital infrastructure works in ${cName} to mitigate critical flood and road deterioration risks."`;
       }
 
       const agentMsg: AiAgentMessage = {

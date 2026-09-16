@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 export const ReportGenerator: React.FC = () => {
-  const { stats, wards, projects, departmentBudgets, aiRecommendations } = useCivic();
+  const { stats, wards, projects, departmentBudgets, aiRecommendations, currentCity } = useCivic();
 
   const [reportType, setReportType] = useState<'development' | 'budget' | 'ward' | 'resolution'>('development');
 
@@ -81,16 +81,16 @@ export const ReportGenerator: React.FC = () => {
             शासन
           </div>
           <h2 className="text-xl font-black tracking-wide uppercase">
-            कलंब नगर परिषद, जि. यवतमाळ (महाराष्ट्र शासन)
+            {currentCity?.cityName || 'स्थानिक स्वराज्य संस्था'} {currentCity?.ulbType || 'नगर परिषद'}
           </h2>
           <h3 className="text-base font-bold tracking-tight uppercase font-sans text-slate-800">
-            MUNICIPAL COUNCIL KALAMB, DISTRICT YAVATMAL
+            {(currentCity?.ulbType || 'MUNICIPAL COUNCIL').toUpperCase()} {(currentCity?.cityName || 'SELECTED MUNICIPALITY').toUpperCase()}, DISTRICT {(currentCity?.district || 'DISTRICT ULB').toUpperCase()}
           </h3>
           <p className="text-xs font-sans text-slate-600">
             Urban Development Department • 15th Finance Commission Statutory Cycle (FY 2026-27)
           </p>
           <div className="flex justify-between items-center text-[10px] font-sans text-slate-500 pt-2 px-2">
-            <span>Ref No: KNP/UDD/CIVICMIND/2026/089</span>
+            <span>Ref No: ULB/UDD/CIVICMIND/2026/089</span>
             <span>Date: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
           </div>
         </div>
@@ -103,7 +103,7 @@ export const ReportGenerator: React.FC = () => {
                 Subject: Comprehensive Annual Municipal Development Plan (ADP) & Priority Sanction
               </h4>
               <p className="text-[11px] text-slate-600 mt-1">
-                Approved by Chief Officer for submission to District Collector & District Planning Committee (DPDC), Yavatmal.
+                Approved by Chief Officer for submission to District Collector & District Planning Committee (DPDC).
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export const ReportGenerator: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] text-slate-500 block">Municipal Wards</span>
-                <strong className="text-sm">17 Wards</strong>
+                <strong className="text-sm">{stats.totalWards} Wards</strong>
               </div>
               <div>
                 <span className="text-[10px] text-slate-500 block">Capital Outlay</span>
@@ -131,7 +131,7 @@ export const ReportGenerator: React.FC = () => {
                 1. Executive Summary & Problem Diagnostic
               </h5>
               <p className="text-slate-700">
-                Kalamb Nagar Parishad has completed a spatial development audit leveraging CivicMind AI intelligence. The analysis revealed that despite having allocated ₹9.85 Cr across 28 projects, chronic monsoon flooding in Ward 4 (Indira Nagar) and drainage silting in Ward 3 (Ambedkar Nagar) pose severe public health and economic risks. The Council has prioritized ₹3.20 Cr toward drainage and ₹2.80 Cr toward key road widening.
+                {currentCity?.cityName || 'The Municipal Council'} has completed a spatial development audit leveraging CivicMind AI intelligence. The analysis revealed that despite having allocated ₹{stats.allocatedBudgetCr.toFixed(2)} Cr across active infrastructure schemes, chronic storm runoff in low-lying sectors and drainage silting pose public health and economic risks. The Council has prioritized capital works toward drainage stabilization and arterial road surfacing.
               </p>
             </div>
 
@@ -282,7 +282,7 @@ export const ReportGenerator: React.FC = () => {
             <div className="border-t border-slate-400 pt-1">
               <p className="font-bold text-slate-900">Shri. V. K. Joshi</p>
               <p className="text-[10px] text-slate-500">Municipal Engineer</p>
-              <p className="text-[9px] text-slate-400">Kalamb Nagar Parishad</p>
+              <p className="text-[9px] text-slate-400">{currentCity?.cityName || 'Municipal Council'}</p>
             </div>
           </div>
 
@@ -299,7 +299,7 @@ export const ReportGenerator: React.FC = () => {
             <div className="border-t border-slate-400 pt-1">
               <p className="font-bold text-slate-900">Smt. Ananya Patil, IAS</p>
               <p className="text-[10px] text-slate-500">Chief Officer (Class I)</p>
-              <p className="text-[9px] text-slate-400">Kalamb Nagar Parishad</p>
+              <p className="text-[9px] text-slate-400">{currentCity?.cityName || 'Municipal Council'}</p>
             </div>
           </div>
         </div>

@@ -1,283 +1,9 @@
 import { CityProfile, WardData, Project, InfrastructureRisk, DepartmentBudget, AiRecommendation } from '@/types';
-import { WARDS_DATA, PROJECTS_DATA, INFRASTRUCTURE_RISKS, AI_RECOMMENDATIONS, DEPARTMENT_BUDGETS } from '@/data/municipalData';
 
-export const PRE_INDEXED_CITIES: CityProfile[] = [
-  {
-    id: 'kalamb-yavatmal',
-    cityName: 'Kalamb',
-    marathiName: 'कळंब',
-    state: 'Maharashtra',
-    district: 'Yavatmal District',
-    ulbType: 'Nagar Parishad',
-    ulbClass: 'Class B',
-    totalPopulation: 58420,
-    totalWards: 17,
-    areaSqKm: 14.8,
-    totalBudgetCr: 12.50,
-    lat: 20.4735,
-    lng: 78.3375,
-    cityHealthScore: 78,
-    developmentScore: 74,
-    budgetEfficiencyScore: 89,
-    infrastructureRiskScore: 32,
-    citizenSatisfactionScore: 81,
-    currentProblems: [
-      'Drainage Issues: Low-lying Ward 4 & 5 encounter severe monsoon storm stagnation',
-      'Road Deterioration: Main commercial road and market corridor exhibit high pothole index',
-      'Water Supply Gaps: Distribution pressure drops across elevated residential clusters'
-    ],
-    highRiskAreas: [
-      'Ward 4 (Indira Nagar primary drainage choke point)',
-      'Ward 5 (Godhani Nullah flood basin)',
-      'Ward 2 (Market Road asphalt rutting)'
-    ],
-    infrastructureGaps: [
-      'RCC Box Stormwater Drainage Channeling (1.8 km)',
-      'Arterial CC Road rehabilitation for commercial vehicles',
-      'Feeder pipeline extension to tail-end wards'
-    ],
-    budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 4.38 },
-      { department: 'Roads & Transport', percentage: 30, amountCr: 3.75 },
-      { department: 'Water Supply', percentage: 20, amountCr: 2.50 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 1.25 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.62 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 4 (Impact Score: 95)',
-      '#2 Road Rehabilitation – Ward 2 (Impact Score: 89)',
-      '#3 Water Supply Expansion – Ward 6 (Impact Score: 84)'
-    ]
-  },
-  {
-    id: 'yavatmal-hq',
-    cityName: 'Yavatmal',
-    marathiName: 'यवतमाळ',
-    state: 'Maharashtra',
-    district: 'Yavatmal District',
-    ulbType: 'Municipal Council',
-    ulbClass: 'Class A',
-    totalPopulation: 148900,
-    totalWards: 24,
-    areaSqKm: 28.5,
-    totalBudgetCr: 38.40,
-    lat: 20.3888,
-    lng: 78.1204,
-    cityHealthScore: 82,
-    developmentScore: 78,
-    budgetEfficiencyScore: 91,
-    infrastructureRiskScore: 24,
-    citizenSatisfactionScore: 84,
-    currentProblems: [
-      'Drainage infrastructure requires immediate attention in low-lying sectors',
-      'Ward 5 has the highest infrastructure risk due to nullah backflow',
-      'Road maintenance should be prioritized this quarter along commercial corridors'
-    ],
-    highRiskAreas: [
-      'Ward 5 (Godhani Nullah flood basin)',
-      'Ward 4 (Indira Nagar primary drainage blockage)',
-      'Ward 2 (Arni Naka traffic bottleneck & pavement wear)'
-    ],
-    infrastructureGaps: [
-      'RCC Box Stormwater Drainage Channeling (1.8 km)',
-      'Arterial CC Road rehabilitation for heavy freight',
-      'Water Treatment Plant filtration capacity upgrade'
-    ],
-    budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 13.44 },
-      { department: 'Roads & Transport', percentage: 30, amountCr: 11.52 },
-      { department: 'Water Supply', percentage: 20, amountCr: 7.68 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 3.84 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 1.92 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 4 (Impact Score: 95)',
-      '#2 Road Rehabilitation – Ward 2 (Impact Score: 89)',
-      '#3 Water Supply Upgrade – Ward 6 (Impact Score: 84)'
-    ]
-  },
-  {
-    id: 'wardha-city',
-    cityName: 'Wardha',
-    marathiName: 'वर्धा',
-    state: 'Maharashtra',
-    district: 'Wardha District',
-    ulbType: 'Municipal Council',
-    ulbClass: 'Class A',
-    totalPopulation: 112500,
-    totalWards: 22,
-    areaSqKm: 24.2,
-    totalBudgetCr: 29.80,
-    lat: 20.7453,
-    lng: 78.6022,
-    cityHealthScore: 80,
-    developmentScore: 76,
-    budgetEfficiencyScore: 88,
-    infrastructureRiskScore: 28,
-    citizenSatisfactionScore: 82,
-    currentProblems: [
-      'Railway crossing drainage overflow during flash cloudbursts',
-      'Sevagram heritage road needs surface sealing & pedestrian walkways',
-      'Solid waste segregation facility capacity constraints'
-    ],
-    highRiskAreas: [
-      'Ward 6 (Railway colony culvert)',
-      'Ward 9 (Civil Hospital drainage junction)'
-    ],
-    infrastructureGaps: [
-      'Underground storm drain trunk line',
-      'Decentralized sewage treatment plant'
-    ],
-    budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 32, amountCr: 9.54 },
-      { department: 'Roads & Transport', percentage: 32, amountCr: 9.54 },
-      { department: 'Water Supply', percentage: 22, amountCr: 6.56 },
-      { department: 'Sanitation & SWM', percentage: 9, amountCr: 2.68 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 1.49 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 6 (Impact Score: 93)',
-      '#2 Road Rehabilitation – Ward 3 (Impact Score: 88)',
-      '#3 Water Supply Upgrade – Ward 8 (Impact Score: 82)'
-    ]
-  },
-  {
-    id: 'jejuri-pune',
-    cityName: 'Jejuri',
-    marathiName: 'जेजुरी',
-    state: 'Maharashtra',
-    district: 'Pune District',
-    ulbType: 'Nagar Parishad',
-    ulbClass: 'Class C',
-    totalPopulation: 34200,
-    totalWards: 15,
-    areaSqKm: 11.2,
-    totalBudgetCr: 8.60,
-    lat: 18.2778,
-    lng: 74.1594,
-    cityHealthScore: 76,
-    developmentScore: 71,
-    budgetEfficiencyScore: 85,
-    infrastructureRiskScore: 35,
-    citizenSatisfactionScore: 79,
-    currentProblems: [
-      'Pilgrimage peak crowd sanitation and temporary drainage stress',
-      'Old hill-foot water distribution pipe corrosion',
-      'Temple approach road bottlenecks during annual Yatras'
-    ],
-    highRiskAreas: [
-      'Ward 3 (Khandoba Mandir foothill basin)',
-      'Ward 7 (Bus stand storm runoff)'
-    ],
-    infrastructureGaps: [
-      'High-capacity storm drain for temple steps runoff',
-      'Automated water pumping and reservoir monitoring'
-    ],
-    budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 3.01 },
-      { department: 'Roads & Transport', percentage: 30, amountCr: 2.58 },
-      { department: 'Water Supply', percentage: 20, amountCr: 1.72 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 0.86 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.43 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 3 (Impact Score: 94)',
-      '#2 Road Rehabilitation – Ward 1 (Impact Score: 87)',
-      '#3 Water Supply Expansion – Ward 5 (Impact Score: 83)'
-    ]
-  },
-  {
-    id: 'pune-metro',
-    cityName: 'Pune',
-    marathiName: 'पुणे',
-    state: 'Maharashtra',
-    district: 'Pune District',
-    ulbType: 'Municipal Corporation',
-    ulbClass: 'Class A+',
-    totalPopulation: 3850000,
-    totalWards: 41,
-    areaSqKm: 331.2,
-    totalBudgetCr: 845.00,
-    lat: 18.5204,
-    lng: 73.8567,
-    cityHealthScore: 86,
-    developmentScore: 84,
-    budgetEfficiencyScore: 92,
-    infrastructureRiskScore: 22,
-    citizenSatisfactionScore: 88,
-    currentProblems: [
-      'Mutha riverbank flood management and siltation',
-      'Arterial bus rapid transit junction bottleneck points',
-      'Underground utility mapping reconciliation'
-    ],
-    highRiskAreas: [
-      'Ward 12 (Shivajinagar low water table)',
-      'Ward 24 (Hadapsar transit intersection)'
-    ],
-    infrastructureGaps: [
-      'Sensor-based stormwater flood gate automation',
-      'Smart grid LED street lighting retrofits'
-    ],
-    budgetRecommendations: [
-      { department: 'Roads & Transport', percentage: 35, amountCr: 295.75 },
-      { department: 'Drainage & Sewerage', percentage: 30, amountCr: 253.50 },
-      { department: 'Water Supply', percentage: 20, amountCr: 169.00 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 84.50 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 42.25 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Upgrade – Ward 12 (Impact Score: 97)',
-      '#2 Road Rehabilitation – Ward 7 (Impact Score: 91)',
-      '#3 Water Supply Modernization – Ward 18 (Impact Score: 86)'
-    ]
-  },
-  {
-    id: 'pandharkawda-yavatmal',
-    cityName: 'Pandharkawda',
-    marathiName: 'पांढरकवडा',
-    state: 'Maharashtra',
-    district: 'Yavatmal District',
-    ulbType: 'Nagar Parishad',
-    ulbClass: 'Class C',
-    totalPopulation: 38200,
-    totalWards: 16,
-    areaSqKm: 12.4,
-    totalBudgetCr: 9.80,
-    lat: 20.0248,
-    lng: 78.5322,
-    cityHealthScore: 75,
-    developmentScore: 71,
-    budgetEfficiencyScore: 86,
-    infrastructureRiskScore: 34,
-    citizenSatisfactionScore: 78,
-    currentProblems: [
-      'National Highway 44 junction drainage overflow during heavy cloudbursts',
-      'Old iron pipeline leakage leading to localized water shortages',
-      'Solid waste dumping ground bio-mining requirements'
-    ],
-    highRiskAreas: [
-      'Ward 3 (NH-44 bypass drainage bottleneck)',
-      'Ward 8 (Subhash Nagar low line water logging)'
-    ],
-    infrastructureGaps: [
-      'Concrete roadside box drains along bypass feeder',
-      'Automated chlorine dosing and overhead reservoir telemetry'
-    ],
-    budgetRecommendations: [
-      { department: 'Drainage & Sewerage', percentage: 35, amountCr: 3.43 },
-      { department: 'Roads & Transport', percentage: 30, amountCr: 2.94 },
-      { department: 'Water Supply', percentage: 20, amountCr: 1.96 },
-      { department: 'Sanitation & SWM', percentage: 10, amountCr: 0.98 },
-      { department: 'Street Lighting & Energy', percentage: 5, amountCr: 0.49 }
-    ],
-    topDevelopmentPriorities: [
-      '#1 Drainage Channeling – Ward 3 (Impact Score: 94)',
-      '#2 Highway Feeder Road Overlay – Ward 5 (Impact Score: 88)',
-      '#3 WTP Pumping Automation – Ward 8 (Impact Score: 83)'
-    ]
-  }
-];
-
+/**
+ * Dynamically synthesizes an authentic municipal intelligence dataset for ANY selected location in India.
+ * Generates wards, coordinates, projects, risk zones, budget recommendations, and AI insights on-the-fly.
+ */
 export function generateCityIntelligence(
   inputName: string,
   customCoords?: { lat: number; lng: number }
@@ -288,50 +14,52 @@ export function generateCityIntelligence(
   risks: InfrastructureRisk[];
   recommendations: AiRecommendation[];
 } {
-  const cleanName = inputName.trim();
+  const cleanName = inputName.trim() || 'Selected Municipality';
 
-  // Check if matching pre-indexed city
-  const preIndexed = PRE_INDEXED_CITIES.find(
-    c => c.cityName.toLowerCase() === cleanName.toLowerCase() ||
-         c.id.toLowerCase().includes(cleanName.toLowerCase())
-  );
+  // Compute a deterministic hash from the location name for seed calculations
+  const nameHash = cleanName.split('').reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
 
-  if (preIndexed && !customCoords) {
-    return {
-      profile: preIndexed,
-      wards: WARDS_DATA,
-      projects: PROJECTS_DATA,
-      risks: INFRASTRUCTURE_RISKS,
-      recommendations: AI_RECOMMENDATIONS,
-    };
+  // Coordinate and regional metadata resolution (100% dynamic procedural generation)
+  let lat = Number((18.5 + ((nameHash % 400) / 100)).toFixed(4));
+  let lng = Number((74.0 + ((nameHash % 500) / 100)).toFixed(4));
+  let state = 'Maharashtra';
+  let district = `${cleanName} District`;
+  let ulbType: CityProfile['ulbType'] = (nameHash % 3 === 0) 
+    ? 'Municipal Council' 
+    : (nameHash % 3 === 1) 
+    ? 'Nagar Parishad' 
+    : 'Nagar Panchayat';
+
+  if (customCoords && customCoords.lat && customCoords.lng) {
+    lat = customCoords.lat;
+    lng = customCoords.lng;
   }
 
-  // Algorithmic synthesis for ANY custom city in India
-  const nameHash = cleanName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const lat = customCoords ? customCoords.lat : 20.2 + ((nameHash % 200) / 100);
-  const lng = customCoords ? customCoords.lng : 77.8 + ((nameHash % 300) / 100);
+  // Dynamic population and size metrics
+  const totalWards = 15 + (nameHash % 10);
+  const totalPopulation = 42000 + ((nameHash * 173) % 115000);
+  const areaSqKm = Number((12.5 + ((nameHash % 180) / 10)).toFixed(1));
+  const totalBudgetCr = Number((11.5 + ((nameHash % 280) / 10)).toFixed(2));
 
-  const wardCount = 14 + (nameHash % 10);
-  const population = 45000 + (nameHash * 180) % 95000;
-  const totalBudgetCr = Number((12.0 + (nameHash % 18) * 1.2).toFixed(2));
-
-  const devScore = 70 + (nameHash % 18);
+  // Dynamic scores (0-100)
+  const devScore = 70 + (nameHash % 16);
   const healthScore = Math.min(94, devScore + 4);
   const riskScore = Math.max(18, 38 - (nameHash % 15));
-  const budgetEfficiency = 80 + (nameHash % 15);
+  const budgetEfficiency = 82 + (nameHash % 14);
   const citizenSatisfaction = Math.min(96, Math.round((devScore + budgetEfficiency) / 2));
 
+  // Dynamic City Profile
   const profile: CityProfile = {
-    id: `city-${cleanName.toLowerCase().replace(/\s+/g, '-')}`,
+    id: `loc-${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
     cityName: cleanName,
     marathiName: cleanName,
-    state: 'Maharashtra',
-    district: `${cleanName} District`,
-    ulbType: 'Municipal Council',
-    ulbClass: 'Class A',
-    totalPopulation: population,
-    totalWards: wardCount,
-    areaSqKm: Number((16.5 + (nameHash % 12)).toFixed(1)),
+    state,
+    district,
+    ulbType,
+    ulbClass: totalPopulation > 100000 ? 'Class A' : totalPopulation > 50000 ? 'Class B' : 'Class C',
+    totalPopulation,
+    totalWards,
+    areaSqKm,
     totalBudgetCr,
     lat,
     lng,
@@ -341,17 +69,19 @@ export function generateCityIntelligence(
     infrastructureRiskScore: riskScore,
     citizenSatisfactionScore: citizenSatisfaction,
     currentProblems: [
-      'Drainage infrastructure requires immediate attention before heavy rainfall',
-      `Ward ${3 + (nameHash % 4)} has the highest infrastructure risk`,
-      'Road maintenance should be prioritized this quarter along major corridors'
+      `Drainage Issues: Low-lying Ward 4 & Ward 5 encounter storm runoff stagnation during monsoon surges`,
+      `Road Deterioration: Main arterial commercial spine connecting to highway exhibits high pavement wear`,
+      `Water Supply Gaps: Distribution pressure variance between elevated and valley neighborhoods`
     ],
     highRiskAreas: [
-      `Ward ${2 + (nameHash % 3)} (Primary drainage choke point)`,
-      `Ward ${4 + (nameHash % 4)} (Asphalt wear & transit rutting)`
+      `Ward 4 (${cleanName} Primary Drainage Outfall)`,
+      `Ward 5 (Low-Lying Basin Contour)`,
+      `Ward 2 (Heavy Freight Transit Corridor)`
     ],
     infrastructureGaps: [
-      'Stormwater box drainage modernization',
-      'Water transmission line reinforcement'
+      'RCC Box Stormwater Drainage Channeling (1.8 km)',
+      'Arterial CC Road rehabilitation for heavy freight vehicles',
+      'Feeder pipeline extension to balance distribution pressure'
     ],
     budgetRecommendations: [
       { department: 'Drainage & Sewerage', percentage: 35, amountCr: Number((totalBudgetCr * 0.35).toFixed(2)) },
@@ -363,15 +93,295 @@ export function generateCityIntelligence(
     topDevelopmentPriorities: [
       `#1 Drainage Upgrade – Ward 4 (Impact Score: 95)`,
       `#2 Road Rehabilitation – Ward 2 (Impact Score: 89)`,
-      `#3 Water Supply Upgrade – Ward 6 (Impact Score: 84)`
+      `#3 Water Supply Expansion – Ward 6 (Impact Score: 84)`
     ]
   };
 
+  // Dynamically generate Ward Data distributed around the selected coordinates
+  const wards: WardData[] = Array.from({ length: totalWards }, (_, i) => {
+    const wardNum = i + 1;
+    const angle = (i / totalWards) * 2 * Math.PI;
+    const radius = 0.008 + ((i % 3) * 0.005);
+    const wardLat = Number((lat + radius * Math.cos(angle)).toFixed(6));
+    const wardLng = Number((lng + radius * Math.sin(angle)).toFixed(6));
+    const wardPop = Math.round(totalPopulation / totalWards + ((nameHash + i * 31) % 1200) - 600);
+
+    const isHighRisk = wardNum === 4 || wardNum === 5;
+
+    return {
+      id: wardNum,
+      number: wardNum,
+      name: `${cleanName} Ward ${wardNum}`,
+      marathiName: `प्रभाग क्र. ${wardNum}`,
+      counselor: `Ward Counselor ${wardNum}`,
+      contact: `+91 98220 ${String(10000 + wardNum * 37).slice(-5)}`,
+      population: wardPop,
+      areaSqKm: Number((areaSqKm / totalWards).toFixed(2)),
+      lat: wardLat,
+      lng: wardLng,
+      compositeScore: isHighRisk ? 54 + (i % 6) : 74 + (i % 16),
+      rank: wardNum,
+      scores: {
+        roadQuality: isHighRisk ? 52 : 75 + (i % 12),
+        waterSupply: 70 + (i % 15),
+        drainage: isHighRisk ? 42 : 72 + (i % 14),
+        streetLighting: 80 + (i % 12),
+        sanitation: 68 + (i % 16),
+        citizenComplaints: isHighRisk ? 38 : 12 + (i % 8)
+      },
+      highRisk: isHighRisk,
+      riskFactors: isHighRisk ? ['Monsoon backwater accumulation', 'Culvert silt constriction'] : ['Routine road resurfacing'],
+      budgetAllocatedLakhs: Math.round((totalBudgetCr * 100) / totalWards),
+      activeProjectsCount: 1 + (i % 3),
+      unresolvedGrievances: isHighRisk ? 28 : 5 + (i % 8)
+    };
+  });
+
+  // Dynamically generate Projects for this specific location
+  const projects: Project[] = [
+    {
+      id: `PRJ-${cleanName.slice(0, 3).toUpperCase()}-001`,
+      title: `${cleanName} Ward 4 Stormwater Box Drainage Channeling`,
+      description: `Construction of 1.8km RCC box drain to prevent monsoon backflow in low-lying residential clusters.`,
+      department: 'Drainage & Sewerage',
+      wardId: 4,
+      wardName: `${cleanName} Ward 4`,
+      budgetLakhs: 120,
+      spentLakhs: 45,
+      status: 'In Progress',
+      startDate: '2026-04-10',
+      targetDate: '2026-11-30',
+      contractor: 'Mahalaxmi Infrastructure Ltd.',
+      completionPercentage: 38,
+      lat: wards[3]?.lat || lat + 0.005,
+      lng: wards[3]?.lng || lng - 0.004,
+      populationBenefited: 12000,
+      costPerCitizen: 1000,
+      riskReductionPercentage: 84,
+      priorityScore: 95,
+      riskScore: 88,
+      strategicScore: 92,
+      impactScore: 95,
+      conditionRating: 'Poor',
+      complaintCount: 42,
+      aiJustification: 'Halts chronic waterlogging before monsoon precipitation window.',
+      recommendedBudgetLakhs: 120
+    },
+    {
+      id: `PRJ-${cleanName.slice(0, 3).toUpperCase()}-002`,
+      title: `${cleanName} Main Commercial Road CC Resurfacing`,
+      description: `Rehabilitation of 2.4km arterial commercial market road with heavy freight bearing pavement.`,
+      department: 'Roads & Transport',
+      wardId: 2,
+      wardName: `${cleanName} Ward 2`,
+      budgetLakhs: 95,
+      spentLakhs: 62,
+      status: 'In Progress',
+      startDate: '2026-03-01',
+      targetDate: '2026-09-30',
+      contractor: 'Vidarbha Roadways & Builders',
+      completionPercentage: 65,
+      lat: wards[1]?.lat || lat - 0.003,
+      lng: wards[1]?.lng || lng + 0.005,
+      populationBenefited: 34000,
+      costPerCitizen: 279,
+      riskReductionPercentage: 68,
+      priorityScore: 89,
+      riskScore: 72,
+      strategicScore: 86,
+      impactScore: 89,
+      conditionRating: 'Poor',
+      complaintCount: 31,
+      aiJustification: 'High-density commercial route with severe pavement distress index.',
+      recommendedBudgetLakhs: 95
+    },
+    {
+      id: `PRJ-${cleanName.slice(0, 3).toUpperCase()}-003`,
+      title: `${cleanName} Ward 6 Elevated Reservoir Feeder Pipeline`,
+      description: `Extending ductile iron water transmission feeder to stabilize distribution pressure.`,
+      department: 'Water Supply',
+      wardId: 6,
+      wardName: `${cleanName} Ward 6`,
+      budgetLakhs: 65,
+      spentLakhs: 10,
+      status: 'Planned',
+      startDate: '2026-08-01',
+      targetDate: '2027-01-15',
+      contractor: 'Shree Jaltech Engineering',
+      completionPercentage: 15,
+      lat: wards[5]?.lat || lat + 0.006,
+      lng: wards[5]?.lng || lng + 0.003,
+      populationBenefited: 12500,
+      costPerCitizen: 520,
+      riskReductionPercentage: 55,
+      priorityScore: 84,
+      riskScore: 60,
+      strategicScore: 80,
+      impactScore: 84,
+      conditionRating: 'Moderate',
+      complaintCount: 19,
+      aiJustification: 'Balances distribution pressure variance in elevated neighborhood.',
+      recommendedBudgetLakhs: 65
+    },
+    {
+      id: `PRJ-${cleanName.slice(0, 3).toUpperCase()}-004`,
+      title: `${cleanName} Mechanized SWM Segregation Facility`,
+      description: `Modern rotary trommel waste segregation and material recovery center.`,
+      department: 'Sanitation & SWM',
+      wardId: 8,
+      wardName: `${cleanName} Ward 8`,
+      budgetLakhs: 50,
+      spentLakhs: 50,
+      status: 'Completed',
+      startDate: '2025-11-01',
+      targetDate: '2026-05-30',
+      contractor: 'Green Earth Civic Solutions',
+      completionPercentage: 100,
+      lat: wards[7]?.lat || lat - 0.007,
+      lng: wards[7]?.lng || lng - 0.006,
+      populationBenefited: 28000,
+      costPerCitizen: 178,
+      riskReductionPercentage: 45,
+      priorityScore: 78,
+      riskScore: 40,
+      strategicScore: 75,
+      impactScore: 78,
+      conditionRating: 'Good',
+      complaintCount: 8,
+      aiJustification: 'Achieves 100% source segregation compliance under Swachh Bharat.',
+      recommendedBudgetLakhs: 50
+    }
+  ];
+
+  // Dynamically generate Infrastructure Risks
+  const risks: InfrastructureRisk[] = [
+    {
+      id: `RSK-${cleanName.slice(0, 3).toUpperCase()}-01`,
+      type: 'drain_blockage',
+      title: `Outfall Nullah Silt Constriction – Ward 4`,
+      wardId: 4,
+      wardName: `${cleanName} Ward 4`,
+      locationDetails: `Low-lying basin outfall adjacent to culvert`,
+      severity: 'Critical',
+      probabilityPercentage: 84,
+      predictedFailureDays: 14,
+      affectedPopulation: 12000,
+      estimatedRemedyCostLakhs: 25,
+      recommendedAction: 'Immediate desilting and temporary diesel dewatering pumps.',
+      aiDiagnostic: '84% inundation hazard detected during precipitation window.',
+      lat: wards[3]?.lat || lat + 0.005,
+      lng: wards[3]?.lng || lng - 0.004,
+      status: 'Active',
+      createdAt: '2026-09-10'
+    },
+    {
+      id: `RSK-${cleanName.slice(0, 3).toUpperCase()}-02`,
+      type: 'road_deterioration',
+      title: `Sub-Base Rutting on Commercial Market Route`,
+      wardId: 2,
+      wardName: `${cleanName} Ward 2`,
+      locationDetails: `Main freight transit corridor junction`,
+      severity: 'High',
+      probabilityPercentage: 72,
+      predictedFailureDays: 28,
+      affectedPopulation: 34000,
+      estimatedRemedyCostLakhs: 40,
+      recommendedAction: 'Bitumen patch sealing prior to monsoon.',
+      aiDiagnostic: 'PDI index dropped to 38/100 under heavy axle freight load.',
+      lat: wards[1]?.lat || lat - 0.003,
+      lng: wards[1]?.lng || lng + 0.005,
+      status: 'Active',
+      createdAt: '2026-09-08'
+    },
+    {
+      id: `RSK-${cleanName.slice(0, 3).toUpperCase()}-03`,
+      type: 'water_leakage',
+      title: `Feeder Pipeline Pressure Variance – Ward 6`,
+      wardId: 6,
+      wardName: `${cleanName} Ward 6`,
+      locationDetails: `Elevated cluster distribution spine`,
+      severity: 'Moderate',
+      probabilityPercentage: 55,
+      predictedFailureDays: 45,
+      affectedPopulation: 12500,
+      estimatedRemedyCostLakhs: 18,
+      recommendedAction: 'Pressure reducing valve calibration.',
+      aiDiagnostic: 'Tail-end supply variance causing localized shortages.',
+      lat: wards[5]?.lat || lat + 0.006,
+      lng: wards[5]?.lng || lng + 0.003,
+      status: 'Under Inspection',
+      createdAt: '2026-09-05'
+    }
+  ];
+
+  // Dynamically generate AI Recommendations
+  const recommendations: AiRecommendation[] = [
+    {
+      id: `REC-${cleanName.slice(0, 3).toUpperCase()}-1`,
+      title: `Drainage Upgrade – Ward 4`,
+      wardId: 4,
+      wardName: `${cleanName} Ward 4`,
+      recommendedBudgetLakhs: 120,
+      populationBenefited: 12000,
+      floodOrRiskReduction: 84,
+      qualityOfLifeLift: 18,
+      impactScore: 95,
+      category: 'Drainage & Sewerage',
+      priorityRank: 1,
+      urgency: 'Immediate',
+      justification: `Halts chronic waterlogging before the monsoon precipitation window.`,
+      roiCitizenImpact: `₹1,000 per citizen protected from flood damages.`,
+      status: 'Approved for DPR'
+    },
+    {
+      id: `REC-${cleanName.slice(0, 3).toUpperCase()}-2`,
+      title: `Road Rehabilitation – Ward 2`,
+      wardId: 2,
+      wardName: `${cleanName} Ward 2`,
+      recommendedBudgetLakhs: 95,
+      populationBenefited: 34000,
+      floodOrRiskReduction: 68,
+      qualityOfLifeLift: 14,
+      impactScore: 89,
+      category: 'Roads & Transport',
+      priorityRank: 2,
+      urgency: 'Immediate',
+      justification: `High transit commercial route with heavy commuter traffic delay.`,
+      roiCitizenImpact: `₹279 per commuter with 35% travel time recovery.`,
+      status: 'Pending Council Review'
+    },
+    {
+      id: `REC-${cleanName.slice(0, 3).toUpperCase()}-3`,
+      title: `Water Supply Expansion – Ward 6`,
+      wardId: 6,
+      wardName: `${cleanName} Ward 6`,
+      recommendedBudgetLakhs: 65,
+      populationBenefited: 12500,
+      floodOrRiskReduction: 55,
+      qualityOfLifeLift: 12,
+      impactScore: 84,
+      category: 'Water Supply',
+      priorityRank: 3,
+      urgency: 'Upcoming Quarter',
+      justification: `Balances distribution pressure variance in elevated neighborhood.`,
+      roiCitizenImpact: `Stabilizes daily water supply duration to 135 LPCD.`,
+      status: 'Pending Council Review'
+    }
+  ];
+
   return {
     profile,
-    wards: WARDS_DATA,
-    projects: PROJECTS_DATA,
-    risks: INFRASTRUCTURE_RISKS,
-    recommendations: AI_RECOMMENDATIONS,
+    wards,
+    projects,
+    risks,
+    recommendations
   };
 }
+
+// Export procedural sample administrative tiers for generic demonstration if needed
+export const PRE_INDEXED_CITIES: CityProfile[] = [
+  generateCityIntelligence('District Headquarters Council').profile,
+  generateCityIntelligence('Sub-Divisional Nagar Parishad').profile,
+  generateCityIntelligence('Industrial Area Nagar Parishad').profile,
+  generateCityIntelligence('Emerging Nagar Panchayat').profile
+];

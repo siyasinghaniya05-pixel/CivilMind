@@ -27,18 +27,18 @@ import {
 } from 'recharts';
 
 export const MultiTenantDashboard: React.FC = () => {
-  const { tenantLevel, setTenantLevel, switchCity, setActiveTab } = useCivic();
+  const { tenantLevel, setTenantLevel, switchCity, setActiveTab, currentCity } = useCivic();
 
-  const [selectedDistrict, setSelectedDistrict] = useState('Yavatmal');
+  const [selectedDistrict, setSelectedDistrict] = useState(currentCity?.district || 'District Region');
 
   // Multi-ULB comparative dataset
   const districtUlbs = [
-    { name: 'Yavatmal Municipal Council', class: 'Class A (HQ)', pop: 148900, wdi: 72.8, budgetCr: 38.4, spentPct: 68, highRisks: 3, status: 'Performing' },
-    { name: 'Kalamb Nagar Parishad', class: 'Class B', pop: 58420, wdi: 68.4, budgetCr: 12.5, spentPct: 52, highRisks: 4, status: 'Critical Interventions' },
-    { name: 'Pandharkawda Nagar Parishad', class: 'Class C', pop: 34200, wdi: 62.0, budgetCr: 10.2, spentPct: 48, highRisks: 5, status: 'Vulnerable' },
-    { name: 'Pusad Municipal Council', class: 'Class B', pop: 73500, wdi: 69.2, budgetCr: 16.8, spentPct: 60, highRisks: 3, status: 'Performing' },
-    { name: 'Wani Municipal Council', class: 'Class B (Mining)', pop: 62800, wdi: 64.5, budgetCr: 14.2, spentPct: 55, highRisks: 4, status: 'Pollution Hazard' },
-    { name: 'Umarkhed Nagar Parishad', class: 'Class C', pop: 47200, wdi: 60.5, budgetCr: 11.4, spentPct: 45, highRisks: 5, status: 'Water Deficit' },
+    { name: currentCity?.cityName || 'Selected Municipality', class: currentCity?.ulbType || 'Nagar Parishad', pop: currentCity?.totalPopulation || 58420, wdi: currentCity?.developmentScore || 68.4, budgetCr: currentCity?.totalBudgetCr || 12.5, spentPct: 52, highRisks: 4, status: 'Active Evaluation' },
+    { name: 'District Headquarters Council', class: 'Class A (HQ)', pop: 148900, wdi: 72.8, budgetCr: 38.4, spentPct: 68, highRisks: 3, status: 'Performing' },
+    { name: 'Sub-Divisional Nagar Parishad', class: 'Class B', pop: 69200, wdi: 67.2, budgetCr: 15.8, spentPct: 60, highRisks: 3, status: 'Performing' },
+    { name: 'Industrial Corridor Council', class: 'Class B', pop: 62800, wdi: 64.5, budgetCr: 14.2, spentPct: 55, highRisks: 4, status: 'Infrastructure Overhaul' },
+    { name: 'Agricultural Market ULB', class: 'Class C', pop: 44200, wdi: 62.0, budgetCr: 10.2, spentPct: 48, highRisks: 5, status: 'Vulnerable' },
+    { name: 'Emerging Nagar Panchayat', class: 'Class C', pop: 27200, wdi: 60.5, budgetCr: 8.4, spentPct: 45, highRisks: 5, status: 'Water Deficit' },
   ];
 
   // State level comparison
@@ -130,7 +130,7 @@ export const MultiTenantDashboard: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              {tenantLevel === 'state' ? 'Pan-Maharashtra Municipal Council Ranking' : 'Yavatmal District Nagar Parishad Benchmark'}
+              {tenantLevel === 'state' ? 'Statewide Urban Local Body Benchmarks' : `${currentCity?.district || 'District'} Urban Local Body Benchmark`}
             </h2>
             <p className="text-xs text-slate-500">
               Comparative development scoring, 15th FC grant burn rate, and disaster risk index

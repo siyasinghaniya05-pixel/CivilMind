@@ -82,7 +82,7 @@ export const SmartCityMap: React.FC = () => {
             Geospatial Multi-Layer Infrastructure & Risk Heatmaps
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Real OpenStreetMap visualization for <strong className="text-slate-800 dark:text-slate-200">{currentCity.cityName} ({currentCity.district})</strong> with 4 specialized neural heatmaps.
+            Real OpenStreetMap visualization for <strong className="text-slate-800 dark:text-slate-200">{currentCity?.cityName || 'Selected Municipality'} ({currentCity?.district || 'District Region'})</strong> with 4 specialized neural heatmaps.
           </p>
         </div>
 
@@ -233,11 +233,13 @@ export const SmartCityMap: React.FC = () => {
             <div className="space-y-1 text-slate-600 dark:text-slate-400">
               <div className="flex justify-between">
                 <span>Center Lat/Lng:</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">{currentCity.lat.toFixed(4)}°N, {currentCity.lng.toFixed(4)}°E</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">
+                  {currentCity ? `${currentCity.lat.toFixed(4)}°N, ${currentCity.lng.toFixed(4)}°E` : '20.4735°N, 78.3375°E'}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Total Wards:</span>
-                <strong>{currentCity.totalWards} Wards</strong>
+                <strong>{currentCity?.totalWards || wards.length} Wards</strong>
               </div>
               <div className="flex justify-between">
                 <span>Active Heatmap:</span>
@@ -250,8 +252,8 @@ export const SmartCityMap: React.FC = () => {
         {/* Right Side: Dynamic Leaflet Map Canvas (9 cols) */}
         <div className="lg:col-span-9">
           <DynamicLeafletMap
-            centerLat={currentCity.lat}
-            centerLng={currentCity.lng}
+            centerLat={currentCity?.lat || 20.4735}
+            centerLng={currentCity?.lng || 78.3375}
             wards={wards}
             projects={projects}
             risks={risks}

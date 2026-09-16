@@ -30,7 +30,7 @@ import {
 } from 'recharts';
 
 export const BudgetOptimizer: React.FC = () => {
-  const { totalBudgetOptimizationCr, setTotalBudgetOptimizationCr, setActiveTab } = useCivic();
+  const { totalBudgetOptimizationCr, setTotalBudgetOptimizationCr, setActiveTab, currentCity } = useCivic();
 
   // Allocation percentages across 5 departments for the optimal model
   const [allocationShares, setAllocationShares] = useState({
@@ -157,7 +157,7 @@ export const BudgetOptimizer: React.FC = () => {
             {projectedCitizensServed.toLocaleString('en-IN')}
           </div>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">
-            {Math.round((projectedCitizensServed / 58420) * 100)}% of Kalamb population
+            {Math.round((projectedCitizensServed / (currentCity?.totalPopulation || 60000)) * 100)}% of {currentCity?.cityName || 'municipal'} population
           </p>
         </div>
 

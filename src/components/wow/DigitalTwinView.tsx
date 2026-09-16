@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const DigitalTwinView: React.FC = () => {
-  const { wards, projects, risks, setActiveTab, setSelectedWard } = useCivic();
+  const { wards, projects, risks, setActiveTab, setSelectedWard, currentCity } = useCivic();
 
   const [selectedAssetId, setSelectedAssetId] = useState<string>('esr-1');
   const [activeTelemetryFilter, setActiveTelemetryFilter] = useState<'all' | 'water' | 'drain' | 'power'>('all');
@@ -95,7 +95,7 @@ export const DigitalTwinView: React.FC = () => {
             2.5D City Asset Topology & Real-Time IoT Telemetry
           </h1>
           <p className="text-xs text-slate-300 mt-1 max-w-2xl">
-            Virtual replica of Kalamb Nagar Parishad's physical infrastructure assets — water reservoirs, drainage culverts, CC road stress, and automated CCMS streetlights.
+            Virtual replica of {currentCity?.cityName || 'the municipality'}'s physical infrastructure assets — water reservoirs, drainage culverts, CC road stress, and automated CCMS streetlights.
           </p>
         </div>
 
@@ -115,7 +115,7 @@ export const DigitalTwinView: React.FC = () => {
           <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
             <div className="flex items-center gap-2 text-xs font-bold text-white">
               <Activity className="w-4 h-4 text-emerald-400" />
-              <span>Kalamb Urban Spatial Grid Telemetry</span>
+              <span>{currentCity?.cityName || 'Municipal'} Urban Spatial Grid Telemetry</span>
             </div>
 
             <div className="flex items-center gap-1.5 text-[11px]">

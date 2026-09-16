@@ -19,10 +19,10 @@ export const AuthPage: React.FC = () => {
   const { loginUser, setCurrentView } = useCivic();
 
   const [isRegister, setIsRegister] = useState(false);
-  const [name, setName] = useState('Rajesh Patil');
-  const [email, setEmail] = useState('chief.officer@kalamb.gov.in');
+  const [name, setName] = useState('Officer Rajesh Patil');
+  const [email, setEmail] = useState('officer@ulb.gov.in');
   const [password, setPassword] = useState('••••••••••••');
-  const [organization, setOrganization] = useState('Kalamb Nagar Parishad');
+  const [organization, setOrganization] = useState('Selected Municipality');
   const [role, setRole] = useState<UserRole>('Chief Officer');
 
   const roles: UserRole[] = [
@@ -139,7 +139,7 @@ export const AuthPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="chief.officer@kalamb.gov.in"
+                  placeholder="officer@municipality.gov.in"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-200 bg-zinc-50/50 text-zinc-900 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
@@ -171,7 +171,7 @@ export const AuthPage: React.FC = () => {
                   required
                   value={organization}
                   onChange={(e) => setOrganization(e.target.value)}
-                  placeholder="e.g. Kalamb Nagar Parishad"
+                  placeholder="e.g. Municipal Administration"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-200 bg-zinc-50/50 text-zinc-900 text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
@@ -212,19 +212,19 @@ export const AuthPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => handleQuickDemo('Chief Officer', 'Rajesh Patil', 'Kalamb Nagar Parishad')}
+                onClick={() => handleQuickDemo('Chief Officer', 'Rajesh Patil', 'Municipal Administration')}
                 className="p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-left transition-colors"
               >
                 <span className="text-[11px] font-bold text-zinc-900 block">Chief Officer</span>
-                <span className="text-[10px] text-zinc-500">Kalamb Nagar Parishad</span>
+                <span className="text-[10px] text-zinc-500">General Administration</span>
               </button>
               <button
                 type="button"
-                onClick={() => handleQuickDemo('Engineer', 'Anil Deshmukh', 'Yavatmal Municipal Council')}
+                onClick={() => handleQuickDemo('Engineer', 'Anil Deshmukh', 'Public Works Division')}
                 className="p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-left transition-colors"
               >
                 <span className="text-[11px] font-bold text-zinc-900 block">Municipal Engineer</span>
-                <span className="text-[10px] text-zinc-500">Yavatmal Council</span>
+                <span className="text-[10px] text-zinc-500">Public Works & Roads</span>
               </button>
             </div>
           </div>

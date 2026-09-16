@@ -26,7 +26,8 @@ export const AdminPanel: React.FC = () => {
     projects, 
     departmentBudgets, 
     updateDepartmentBudget, 
-    resetToDefaults 
+    resetToDefaults,
+    currentCity
   } = useCivic();
 
   const [activeAdminTab, setActiveAdminTab] = useState<'wards' | 'departments' | 'budgets' | 'users' | 'assets'>('wards');
@@ -39,11 +40,11 @@ export const AdminPanel: React.FC = () => {
 
   // Mock User Roles
   const usersList = [
-    { name: 'Smt. Ananya Patil, IAS', role: 'Chief Officer', dept: 'General Administration', email: 'co.kalamb@maharashtra.gov.in', status: 'Active' },
-    { name: 'Shri. V. K. Joshi', role: 'Municipal Engineer', dept: 'Public Works & Roads', email: 'me.kalamb@maharashtra.gov.in', status: 'Active' },
-    { name: 'Dr. Suresh Waghmare', role: 'Health Officer', dept: 'Sanitation & SWM', email: 'health.kalamb@maharashtra.gov.in', status: 'Active' },
-    { name: 'Shri. Sachin Deshmukh', role: 'Water Supply In-charge', dept: 'Water Works', email: 'water.kalamb@maharashtra.gov.in', status: 'Active' },
-    { name: 'District Planning Officer', role: 'District Administration', dept: 'Collectorate Yavatmal', email: 'dpo.yavatmal@nic.in', status: 'Viewer' },
+    { name: 'Smt. Ananya Patil, IAS', role: 'Chief Officer', dept: 'General Administration', email: 'co.admin@ulb.gov.in', status: 'Active' },
+    { name: 'Shri. V. K. Joshi', role: 'Municipal Engineer', dept: 'Public Works & Roads', email: 'me.admin@ulb.gov.in', status: 'Active' },
+    { name: 'Dr. Suresh Waghmare', role: 'Health Officer', dept: 'Sanitation & SWM', email: 'health.admin@ulb.gov.in', status: 'Active' },
+    { name: 'Shri. Sachin Deshmukh', role: 'Water Supply In-charge', dept: 'Water Works', email: 'water.admin@ulb.gov.in', status: 'Active' },
+    { name: 'District Planning Officer', role: 'District Administration', dept: 'District Collectorate', email: 'dpo.collectorate@nic.in', status: 'Viewer' },
   ];
 
   // Mock Infrastructure Assets
@@ -51,7 +52,7 @@ export const AdminPanel: React.FC = () => {
     { name: 'Central Elevated Storage Reservoir (ESR)', type: 'Water Supply', ward: 'Ward 1', capacity: '12.5 Lakh Litres', condition: 'Good' },
     { name: 'Indira Nagar Flood Pumping Station', type: 'Drainage', ward: 'Ward 4', capacity: '35 HP Diesel Pumps', condition: 'Moderate' },
     { name: 'APMC Market Main Asphalt Corridor', type: 'Roads', ward: 'Ward 2', capacity: '1.4 km CC Paved', condition: 'Under Overhaul' },
-    { name: 'Yavatmal Bypass Material Recovery Facility', type: 'Solid Waste', ward: 'Ward 17', capacity: '5 TPD Trommel', condition: 'Commissioning' },
+    { name: 'Municipal Bypass Material Recovery Facility', type: 'Solid Waste', ward: 'Ward 17', capacity: '5 TPD Trommel', condition: 'Commissioning' },
     { name: 'Sub-Jail Feeder CCMS Panel', type: 'Electrical', ward: 'Ward 10', capacity: '45 Streetlights', condition: 'Operational' },
   ];
 
@@ -124,9 +125,9 @@ export const AdminPanel: React.FC = () => {
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              Kalamb Nagar Parishad Wards Registry
+              {currentCity?.cityName || 'Selected Municipality'} Wards Registry
             </h2>
-            <span className="text-xs text-slate-500 font-semibold">17 Recognized Wards</span>
+            <span className="text-xs text-slate-500 font-semibold">{wards.length || 18} Recognized Wards</span>
           </div>
 
           <div className="overflow-x-auto">
@@ -252,7 +253,7 @@ export const AdminPanel: React.FC = () => {
             </div>
 
             <div className="p-4 rounded-xl border border-indigo-200 dark:border-indigo-900 bg-indigo-50/40 dark:bg-indigo-950/20 space-y-2">
-              <span className="font-bold text-indigo-900 dark:text-indigo-300 block">DPDC Special Grants (Yavatmal)</span>
+              <span className="font-bold text-indigo-900 dark:text-indigo-300 block">DPDC Special Grants ({currentCity?.district || 'District Planning'})</span>
               <p className="text-slate-600 dark:text-slate-400 text-[11px]">
                 District Planning Committee grants under the District Guardian Minister quota.
               </p>

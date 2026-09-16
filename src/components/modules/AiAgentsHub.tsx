@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 export const AiAgentsHub: React.FC = () => {
-  const { agentMessages, sendAgentMessage, setActiveTab } = useCivic();
+  const { agentMessages, sendAgentMessage, setActiveTab, currentCity } = useCivic();
 
   const [activeAgentType, setActiveAgentType] = useState<'budget' | 'infra' | 'risk' | 'priority' | 'report'>('budget');
   const [inputText, setInputText] = useState('');
@@ -218,7 +218,7 @@ export const AiAgentsHub: React.FC = () => {
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`Ask ${currentAgentMeta.title} regarding Kalamb Nagar Parishad...`}
+              placeholder={`Ask ${currentAgentMeta.title} regarding ${currentCity?.cityName || 'Selected Municipality'}...`}
               className="flex-1 p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button

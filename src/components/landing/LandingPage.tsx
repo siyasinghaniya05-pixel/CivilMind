@@ -45,10 +45,10 @@ export const LandingPage: React.FC = () => {
 
   // Hero direct Login/Register panel state (MahaDBT style)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [authEmail, setAuthEmail] = useState('chief.officer@kalamb.gov.in');
+  const [authEmail, setAuthEmail] = useState('officer@ulb.gov.in');
   const [authPassword, setAuthPassword] = useState('••••••••••••');
   const [authName, setAuthName] = useState('Rajesh Patil');
-  const [authOrg, setAuthOrg] = useState('Kalamb Nagar Parishad');
+  const [authOrg, setAuthOrg] = useState('Selected Municipality');
   const [authRole, setRole] = useState<UserRole>('Chief Officer');
 
   // Animated counters
@@ -58,25 +58,30 @@ export const LandingPage: React.FC = () => {
   const [citizensCount, setCitizensCount] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCitiesCount(500);
-      setProjectsCount(10000);
-      setBudgetCount(500);
-      setCitizensCount(25);
-    }, 250);
-    return () => clearTimeout(timer);
+    // Increment animations to make data feel live and verified
+    const t1 = setInterval(() => setCitiesCount(prev => prev < 428 ? prev + 12 : 428), 20);
+    const t2 = setInterval(() => setProjectsCount(prev => prev < 12450 ? prev + 350 : 12450), 20);
+    const t3 = setInterval(() => setBudgetCount(prev => prev < 840 ? prev + 24 : 840), 20);
+    const t4 = setInterval(() => setCitizensCount(prev => prev < 240 ? prev + 6 : 240), 20);
+
+    return () => {
+      clearInterval(t1);
+      clearInterval(t2);
+      clearInterval(t3);
+      clearInterval(t4);
+    };
   }, []);
 
-  // Notice & Updates tab state
+  // Real-time scrolling notices & circulars (MahaDBT style)
   const [activeNoticeTab, setActiveNoticeTab] = useState<'all' | 'announcements' | 'alerts'>('all');
 
   const notices = [
     {
       id: 1,
-      category: 'announcements',
+      category: 'circulars',
       date: '15 Sep 2026',
-      title: 'Advisory on 15th Finance Commission Tied Grant Utilization for FY 2026-27',
-      desc: 'All Nagar Parishads and Municipal Councils must upload GIS drainage master plans before Q3 capital disbursement.',
+      title: 'UDD Circular: 15th Finance Commission Untied Grant Spatial Verification',
+      desc: 'All Urban Local Bodies must submit AI-verified spatial project logs prior to Q3 fund release tranche.',
       badge: 'NEW',
       badgeColor: 'bg-emerald-100 text-emerald-800'
     },
@@ -85,7 +90,7 @@ export const LandingPage: React.FC = () => {
       category: 'alerts',
       date: '14 Sep 2026',
       title: 'Pre-Monsoon Flood Hazard & Drainage Desilting Audit Directive',
-      desc: 'High-risk low basin contours identified across Wardha, Yavatmal, and Vidarbha district ULBs require immediate desilting tenders.',
+      desc: 'High-risk low basin contours identified across vulnerable district ULBs require immediate desilting tenders.',
       badge: 'URGENT',
       badgeColor: 'bg-red-100 text-red-800'
     },
@@ -287,7 +292,7 @@ export const LandingPage: React.FC = () => {
                       <Activity className="w-3.5 h-3.5 text-emerald-400" />
                       Live Municipal Intelligence Telemetry
                     </span>
-                    <span className="font-mono text-[10px] text-slate-400">Kalamb Nagar Parishad (MH)</span>
+                    <span className="font-mono text-[10px] text-slate-400">Location Analysis • Dynamic Telemetry</span>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
@@ -383,7 +388,7 @@ export const LandingPage: React.FC = () => {
                       required
                       value={authEmail}
                       onChange={(e) => setAuthEmail(e.target.value)}
-                      placeholder="chief.officer@kalamb.gov.in"
+                      placeholder="officer@municipality.gov.in"
                       className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-800 focus:outline-none"
                     />
                   </div>
@@ -411,7 +416,7 @@ export const LandingPage: React.FC = () => {
                       required
                       value={authOrg}
                       onChange={(e) => setAuthOrg(e.target.value)}
-                      placeholder="e.g. Kalamb Nagar Parishad"
+                      placeholder="e.g. Selected Municipality / Nagar Parishad"
                       className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-800 focus:outline-none"
                     />
                   </div>
@@ -446,9 +451,9 @@ export const LandingPage: React.FC = () => {
                     type="button"
                     onClick={() => {
                       loginUser({
-                        name: 'Rajesh Patil',
-                        email: 'chief.officer@kalamb.gov.in',
-                        organization: 'Kalamb Nagar Parishad',
+                        name: 'Officer Rajesh Patil',
+                        email: 'officer@ulb.gov.in',
+                        organization: 'Municipal Administration',
                         role: 'Chief Officer'
                       });
                     }}
@@ -754,7 +759,7 @@ export const LandingPage: React.FC = () => {
                 type="text"
                 value={explorerSearch}
                 onChange={(e) => setExplorerSearch(e.target.value)}
-                placeholder="Search City, Nagar Parishad, Nagar Panchayat (e.g. Kalamb, Yavatmal, Wardha, Pandharkawda)"
+                placeholder="Search ANY Indian City, Nagar Parishad, or Nagar Panchayat..."
                 className="w-full pl-12 pr-28 py-3 rounded-xl border border-slate-300 bg-slate-50 text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-800"
               />
               <button
@@ -769,17 +774,17 @@ export const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Quick Clickable Examples */}
+            {/* Quick Clickable Classifications */}
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-                Quick Municipal Profiles:
+                Supported Administrative Classifications:
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {[
-                  { name: 'Kalamb', type: 'Nagar Parishad', dist: 'Yavatmal' },
-                  { name: 'Yavatmal', type: 'Municipal Council', dist: 'Yavatmal' },
-                  { name: 'Wardha', type: 'Municipal Council', dist: 'Wardha' },
-                  { name: 'Pandharkawda', type: 'Nagar Parishad', dist: 'Yavatmal' }
+                  { name: 'District HQ Council', type: 'Class A Council', dist: 'Administrative' },
+                  { name: 'Industrial Parishad', type: 'Class B Council', dist: 'Industrial Belt' },
+                  { name: 'Sub-Divisional Parishad', type: 'Class C Council', dist: 'Growth Center' },
+                  { name: 'Rural Growth Center', type: 'Nagar Panchayat', dist: 'Emerging ULB' }
                 ].map((item) => (
                   <button
                     key={item.name}
@@ -793,7 +798,7 @@ export const LandingPage: React.FC = () => {
                       <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-800 group-hover:translate-x-0.5 transition-transform" />
                     </div>
                     <span className="text-[10px] text-slate-500 block">{item.type}</span>
-                    <span className="text-[10px] text-slate-400 block font-mono">{item.dist} Dist.</span>
+                    <span className="text-[10px] text-slate-400 block font-mono">{item.dist} Tier</span>
                   </button>
                 ))}
               </div>
@@ -818,7 +823,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Case 1: Yavatmal */}
+            {/* Case 1: District Council */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded">
@@ -828,9 +833,9 @@ export const LandingPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-slate-950">
-                  Yavatmal Municipal Council
+                  District Headquarters Council
                 </h3>
-                <p className="text-xs text-slate-500">Class A Council • Maharashtra</p>
+                <p className="text-xs text-slate-500">Class A Council • 34 Wards</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 text-center">
@@ -848,7 +853,7 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Case 2: Kalamb */}
+            {/* Case 2: Nagar Parishad */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded">
@@ -858,7 +863,7 @@ export const LandingPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-slate-950">
-                  Kalamb Nagar Parishad
+                  Sub-Divisional Nagar Parishad
                 </h3>
                 <p className="text-xs text-slate-500">Class B Council • 17 Wards</p>
               </div>
@@ -874,23 +879,23 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Automated risk engine identified Ward 4 nullah backflow and sanctioned RCC box drain before heavy precipitation window.
+                Automated risk engine identified critical nullah backflow and sanctioned RCC box drain before heavy precipitation window.
               </p>
             </div>
 
-            {/* Case 3: Jejuri */}
+            {/* Case 3: Special Category ULB */}
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded">
-                  Pilgrim Council
+                  Special Category ULB
                 </span>
                 <span className="text-xs font-bold text-emerald-700">Peak Transit</span>
               </div>
               <div>
                 <h3 className="text-base font-extrabold text-slate-950">
-                  Jejuri Nagar Parishad
+                  Heritage & Transit Council
                 </h3>
-                <p className="text-xs text-slate-500">Pune District • Pilgrimage Hub</p>
+                <p className="text-xs text-slate-500">High Transit Density • 19 Wards</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 text-center">
@@ -904,7 +909,7 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Yatra pilgrimage corridor storm drainage and mobile sanitation deployment optimized with zero public grievances.
+                Urban transport corridor storm drainage and mobile sanitation deployment optimized with zero public grievances.
               </p>
             </div>
           </div>

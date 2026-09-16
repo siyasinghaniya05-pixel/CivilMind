@@ -1,21 +1,21 @@
 import { WardData, Project, InfrastructureRisk, DepartmentBudget, AiRecommendation, MunicipalCityStats } from '@/types';
 
 export const CITY_STATS: MunicipalCityStats = {
-  cityName: 'Kalamb',
-  state: 'Maharashtra',
-  district: 'Yavatmal',
-  ulbType: 'Nagar Parishad (Class B)',
-  totalPopulation: 58420,
-  totalWards: 17,
-  totalBudgetCr: 12.50, // ₹12.50 Crore
-  allocatedBudgetCr: 9.85,
-  spentBudgetCr: 6.42,
-  unspentBudgetCr: 2.65,
-  averageWdiScore: 68.4,
-  activeProjectsCount: 28,
-  highRiskZonesCount: 4,
-  pendingIssuesCount: 142,
-  resolvedGrievancesLastMonth: 318,
+  cityName: 'Selected Municipality',
+  state: 'State Administration',
+  district: 'District ULB',
+  ulbType: 'Municipal Council',
+  totalPopulation: 62000,
+  totalWards: 18,
+  totalBudgetCr: 14.50, // ₹14.50 Crore
+  allocatedBudgetCr: 10.85,
+  spentBudgetCr: 7.20,
+  unspentBudgetCr: 3.65,
+  averageWdiScore: 72.4,
+  activeProjectsCount: 26,
+  highRiskZonesCount: 3,
+  pendingIssuesCount: 118,
+  resolvedGrievancesLastMonth: 340,
 };
 
 export const WARDS_DATA: WardData[] = [
@@ -564,7 +564,7 @@ export const PROJECTS_DATA: Project[] = [
     impactScore: 95,
     conditionRating: 'Very Poor',
     complaintCount: 54,
-    aiJustification: 'Critical priority. Monsoon inundation repeatedly displaces 3,200 households and halts Kalamb-Ralegaon road connectivity. High benefit-to-cost ratio.',
+    aiJustification: 'Critical priority. Monsoon inundation repeatedly displaces 3,200 households and halts arterial road connectivity. High benefit-to-cost ratio.',
     recommendedBudgetLakhs: 125,
     inspectionNotes: 'Excavation 85% completed. Steel rebars verified by Municipal Engineer on 02-Sep-2026.',
     lastInspected: '2026-09-02',
@@ -582,7 +582,7 @@ export const PROJECTS_DATA: Project[] = [
     status: 'In Progress',
     startDate: '2026-01-10',
     targetDate: '2026-07-15',
-    contractor: 'Shri Ram Constructions, Yavatmal',
+    contractor: 'Shri Ram Constructions',
     completionPercentage: 68,
     lat: 20.4712,
     lng: 78.3290,
@@ -706,7 +706,7 @@ export const PROJECTS_DATA: Project[] = [
     status: 'Completed',
     startDate: '2025-08-01',
     targetDate: '2026-02-28',
-    contractor: 'SmartWater Technologies Pune',
+    contractor: 'SmartWater Technologies Corp',
     completionPercentage: 100,
     lat: 20.4785,
     lng: 78.3345,
@@ -750,7 +750,7 @@ export const PROJECTS_DATA: Project[] = [
     impactScore: 86,
     conditionRating: 'Moderate',
     complaintCount: 19,
-    aiJustification: 'Critical for Swachh Survekshan 2026 ranking. Stops unscientific open dumping and fires on Yavatmal highway.',
+    aiJustification: 'Critical for Swachh Survekshan 2026 ranking. Stops unscientific open dumping and fires along the regional highway corridor.',
     recommendedBudgetLakhs: 75,
     inspectionNotes: 'Civil shed fabricated. Trommel machine delivered and awaiting 3-phase power sanction.',
     lastInspected: '2026-09-01',
@@ -768,7 +768,7 @@ export const PROJECTS_DATA: Project[] = [
     status: 'In Progress',
     startDate: '2026-01-20',
     targetDate: '2026-06-30',
-    contractor: 'EESL Authorized Vendor, Wardha',
+    contractor: 'EESL Authorized Vendor',
     completionPercentage: 84,
     lat: 20.4742,
     lng: 78.3395,
@@ -830,7 +830,7 @@ export const PROJECTS_DATA: Project[] = [
     status: 'Completed',
     startDate: '2026-04-01',
     targetDate: '2026-06-10',
-    contractor: 'Kalamb Earthmovers Works',
+    contractor: 'Apex Municipal Earthmovers Works',
     completionPercentage: 100,
     lat: 20.4675,
     lng: 78.3335,
@@ -1020,7 +1020,7 @@ export const AI_RECOMMENDATIONS: AiRecommendation[] = [
     category: 'Drainage & Sewerage',
     priorityRank: 1,
     urgency: 'Immediate',
-    justification: 'Ward 4 ranks lowest in Ward Development Index (49.6/100). Recurring monsoon inundation creates ₹85 Lakhs annual property damages and shuts Kalamb town school belt.',
+    justification: 'Ward 4 ranks lowest in Ward Development Index (49.6/100). Recurring monsoon inundation creates ₹85 Lakhs annual property damages and shuts local town school belt.',
     roiCitizenImpact: 'Every ₹1,000 spent saves ₹3,400 in direct flood relief and road repair overheads over 5 years.',
     status: 'Approved for DPR',
   },
@@ -1108,7 +1108,7 @@ export const AGENT_PROMPTS_SAMPLE = [
     role: 'Disaster Management Officer & Vulnerability Forecaster',
     description: 'Predicts road subsidence, monsoon drainage choke points, pipeline burst probabilities, and vector disease outbreaks.',
     suggestedQueries: [
-      'Predict flood inundation zones in Kalamb if rainfall exceeds 50mm in 3 hours.',
+      'Predict flood inundation zones in the municipality if rainfall exceeds 50mm in 3 hours.',
       'Which 3 wards have the highest composite vulnerability score this month?',
       'What is the failure probability of the Shastri Nagar water main?',
       'List all open drains located within 50 meters of municipal schools.'
@@ -1120,7 +1120,7 @@ export const AGENT_PROMPTS_SAMPLE = [
     role: 'Multi-Criteria Decision Engine (MCDA) Analyst',
     description: 'Ranks project proposals using multi-attribute utility theory balancing cost, citizen reach, complaint heat, and risk abatement.',
     suggestedQueries: [
-      'What should we build next to improve Kalamb Nagar Parishad ranking?',
+      'What should we build next to improve Municipal Council ranking?',
       'Rank the top 5 proposed projects by cost-effectiveness per citizen.',
       'How does increasing risk weighting to 40% alter the top 3 priority tenders?',
       'Compare Ward 4 drainage vs Ward 2 road expansion on equity metrics.'
@@ -1133,7 +1133,7 @@ export const AGENT_PROMPTS_SAMPLE = [
     description: 'Drafts official Council Resolutions (ठराव), District Planning Committee (DPDC) proposals, and annual development summaries.',
     suggestedQueries: [
       'Draft a Council Resolution for administrative approval of Ward 4 Drainage Project.',
-      'Generate the Quarterly Progress Report (QPR) for District Collector Yavatmal.',
+      'Generate the Quarterly Progress Report (QPR) for the District Collector.',
       'Create Ward Development Index scorecard for the General Body meeting.',
       'Export 1-page executive briefing for Chief Officer.'
     ]

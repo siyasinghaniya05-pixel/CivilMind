@@ -20,6 +20,10 @@ import {
 export const FloatingAiAssistant: React.FC = () => {
   const { currentCity, setActiveTab } = useCivic();
 
+  const cityName = currentCity?.cityName || 'Selected Municipality';
+  const stateName = currentCity?.state || 'Maharashtra';
+  const totalPop = currentCity?.totalPopulation || 58000;
+
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Array<{
@@ -33,14 +37,14 @@ export const FloatingAiAssistant: React.FC = () => {
     {
       id: 'initial',
       sender: 'assistant',
-      text: `Hello! I am your AI Development Copilot for **${currentCity.cityName}, ${currentCity.state}**.\n\nAsk me anything about infrastructure risks, capital budget allocations, or ward priorities.`,
+      text: `Hello! I am your AI Development Copilot for **${cityName}, ${stateName}**.\n\nAsk me anything about infrastructure risks, capital budget allocations, or ward priorities.`,
       sources: ['City Diagnostic Synthesis', 'WDI Pillar Metrics', '15th FC Allocations']
     }
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const suggestedQuestions = [
-    `What should ${currentCity.cityName} prioritize next?`,
+    `What should ${cityName} prioritize next?`,
     'Which ward has the highest risk?',
     'How should ₹10 crore be allocated?'
   ];
@@ -63,7 +67,7 @@ export const FloatingAiAssistant: React.FC = () => {
       const lower = q.toLowerCase();
 
       if (lower.includes('prioritize') || lower.includes('build next') || lower.includes('what should')) {
-        answer = `Based on multi-criteria spatial analysis for **${currentCity.cityName}**:
+        answer = `Based on multi-criteria spatial analysis for **${cityName}**:
 1. **#1 Drainage Upgrade – Ward 4** (Score: 95/100, Est. ₹1.2 Cr). Benefits 12,000 citizens and halts chronic waterlogging before the monsoon.
 2. **#2 Road Rehabilitation – Ward 2** (Score: 89/100, Est. ₹95 L). Heavily traversed market freight artery with high pavement wear.
 3. **#3 Water Supply Expansion – Ward 6** (Score: 84/100, Est. ₹65 L). Balances distribution pressure for 12,500 residents.`;
@@ -71,27 +75,28 @@ export const FloatingAiAssistant: React.FC = () => {
         actionLabel = 'View Priority Projects';
         actionTab = 'overview';
       } else if (lower.includes('risk') || lower.includes('which ward')) {
-        const topHazard = currentCity.highRiskAreas[0] || 'Ward 4 (Primary drainage blockage)';
-        answer = `**${topHazard} has the highest infrastructure risk in ${currentCity.cityName}**.
-- **Primary Hazard:** Storm drain silt congestion and backwater overflow risk (${currentCity.infrastructureRiskScore}% index).
+        const topHazard = currentCity?.highRiskAreas?.[0] || 'Ward 4 (Primary drainage blockage)';
+        const riskPct = currentCity?.infrastructureRiskScore ?? 32;
+        answer = `**${topHazard} has the highest infrastructure risk in ${cityName}**.
+- **Primary Hazard:** Storm drain silt congestion and backwater overflow risk (${riskPct}% index).
 - **Vulnerability:** 12,000+ citizens directly in the low-lying basin contour.
 - **Remediation Action:** Expedite RCC box drain channeling and pre-monsoon desilting before heavy rainfall.`;
         sources = ['Hydrodynamic Basin Model', 'District Health Audit', 'ULB Risk Matrix'];
         actionLabel = 'Inspect GIS Risk Map';
         actionTab = 'risks';
       } else if (lower.includes('10 crore') || lower.includes('10 cr') || lower.includes('₹10 crore')) {
-        answer = `If **${currentCity.cityName}** has **₹10 Crore** in available capital budget, AI recommends the following optimal allocation:
+        answer = `If **${cityName}** has **₹10 Crore** in available capital budget, AI recommends the following optimal allocation:
 • **Drainage & Flood Defense (35% | ₹3.50 Cr):** Modernize outfall box culverts in Ward 4 & 5.
 • **Roads & Transportation (30% | ₹3.00 Cr):** Asphalt resurfacing of key commercial freight corridors.
 • **Water Supply & Treatment (20% | ₹2.00 Cr):** Expand feeder lines and automated telemetry tanks.
 • **Sanitation & SWM (15% | ₹1.50 Cr):** Install mechanized segregation trommels and secondary collection bins.
 
-*Projected Impact:* Lifts City Development Score by **+11.2 points** and creates direct civic welfare for over **${Math.round(currentCity.totalPopulation * 0.85).toLocaleString('en-IN')} citizens**.`;
+*Projected Impact:* Lifts City Development Score by **+11.2 points** and creates direct civic welfare for over **${Math.round(totalPop * 0.85).toLocaleString('en-IN')} citizens**.`;
         sources = ['Pareto Capital Optimizer', 'CPHEEO Standards', '15th FC Tied Grants'];
         actionLabel = 'Test in Budget Simulator';
         actionTab = 'overview';
       } else if (lower.includes('5 crore') || lower.includes('5 cr') || lower.includes('allocated') || lower.includes('budget')) {
-        answer = `If **${currentCity.cityName}** has **₹5 Crore** to allocate:
+        answer = `If **${cityName}** has **₹5 Crore** to allocate:
 • **Drainage (35% | ₹1.75 Cr):** Construct Ward 4 box drain & culvert clearance.
 • **Roads (30% | ₹1.50 Cr):** Resurface main commercial market corridor.
 • **Water Supply (20% | ₹1.00 Cr):** Feeder pipeline expansion.
@@ -102,8 +107,8 @@ export const FloatingAiAssistant: React.FC = () => {
         actionLabel = 'Open Budget Simulator';
         actionTab = 'overview';
       } else {
-        answer = `Intelligence summary for **${currentCity.cityName}**:
-Operating with a **Development Score of ${currentCity.developmentScore}/100**, **Infrastructure Health of ${currentCity.cityHealthScore}/100**, and **Risk at ${currentCity.infrastructureRiskScore}%**. Primary challenge: "${currentCity.currentProblems[0]}".`;
+        answer = `Intelligence summary for **${cityName}**:
+Operating with a **Development Score of ${currentCity?.developmentScore ?? 78}/100**, **Infrastructure Health of ${currentCity?.cityHealthScore ?? 82}/100**, and **Risk at ${currentCity?.infrastructureRiskScore ?? 28}%**. Primary focus: Priority drainage and road interventions.`;
       }
 
       setMessages(prev => [
@@ -152,7 +157,7 @@ Operating with a **Development Score of ${currentCity.developmentScore}/100**, *
               </div>
               <div>
                 <h3 className="text-xs font-bold text-zinc-950">CivicMind Copilot</h3>
-                <p className="text-[10px] text-zinc-400">{currentCity.cityName}, {currentCity.state}</p>
+                <p className="text-[10px] text-zinc-400">{cityName}, {stateName}</p>
               </div>
             </div>
 

@@ -20,7 +20,7 @@ import {
 import confetti from 'canvas-confetti';
 
 export const WhatShouldWeBuildNext: React.FC = () => {
-  const { addProject, setActiveTab } = useCivic();
+  const { addProject, setActiveTab, currentCity } = useCivic();
 
   const [step, setStep] = useState<number>(1);
   const [selectedObjective, setSelectedObjective] = useState<string>('drainage');
@@ -233,8 +233,8 @@ export const WhatShouldWeBuildNext: React.FC = () => {
               <div className="space-y-3">
                 {[
                   { id: 'weakest', label: 'Underprivileged / Lowest WDI Wards (Wards 4, 3, 11)', desc: 'Prioritize equity to lift wards scoring below 60 on the Ward Development Index' },
-                  { id: 'commercial', label: 'Commercial Economic Core (Bazar & Bus Stand)', desc: 'Prioritize transit speeds, trade, and economic vibrancy for Kalamb town center' },
-                  { id: 'citywide', label: 'City-Wide Saturation Benefit', desc: 'Prioritize projects serving all 58,420 citizens (e.g. SCADA water automation)' },
+                  { id: 'commercial', label: 'Commercial Economic Core (Bazar & Bus Stand)', desc: `Prioritize transit speeds, trade, and economic vibrancy for ${currentCity?.cityName || 'municipal'} town center` },
+                  { id: 'citywide', label: 'City-Wide Saturation Benefit', desc: `Prioritize projects serving all ${currentCity?.totalPopulation?.toLocaleString('en-IN') || 'citizens'} (e.g. SCADA water automation)` },
                 ].map((t) => (
                   <div
                     key={t.id}
@@ -303,7 +303,7 @@ export const WhatShouldWeBuildNext: React.FC = () => {
               AI Synthesized Decision Justification:
             </h4>
             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-              Ward 4 ranks 17th out of 17 wards in Kalamb Nagar Parishad with a low composite index of 49.6/100. Over 54 citizen complaints were logged in the monsoon season. Due to the 2.8m elevation dip behind Zilla Parishad school, heavy rains trigger overflow that shuts school access and floods 3,200 plinths. Constructing this 1.8km RCC box drain directly utilizes 15th Finance Commission Tied Grants before expiry and solves the single highest disaster hazard in the city.
+              Ward 4 ranks lowest in composite index (49.6/100) across {currentCity?.cityName || 'the municipality'}. Over 54 citizen complaints were logged in the monsoon season. Due to the 2.8m elevation dip behind the local primary school, heavy rains trigger overflow that shuts school access and floods 3,200 plinths. Constructing this 1.8km RCC box drain directly utilizes 15th Finance Commission Tied Grants before expiry and solves the single highest disaster hazard in the city.
             </p>
           </div>
 

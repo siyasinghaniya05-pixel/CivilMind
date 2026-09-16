@@ -30,7 +30,7 @@ import {
 } from 'recharts';
 
 export const WardDevelopmentIndex: React.FC = () => {
-  const { wards, setActiveTab, setSelectedWard } = useCivic();
+  const { wards, setActiveTab, setSelectedWard, currentCity } = useCivic();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRiskOnly, setFilterRiskOnly] = useState(false);
@@ -70,7 +70,7 @@ export const WardDevelopmentIndex: React.FC = () => {
             0–100 Composite Ward Performance Benchmark
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Standardized evaluation across all 17 wards of Kalamb Nagar Parishad across 6 core municipal infrastructure pillars.
+            Standardized evaluation across all wards of {currentCity?.cityName || 'Selected Municipality'} across 6 core municipal infrastructure pillars.
           </p>
         </div>
 

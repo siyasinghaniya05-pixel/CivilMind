@@ -82,13 +82,13 @@ export const Sidebar: React.FC = () => {
       <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80 space-y-1">
         <div className="flex items-center justify-between text-[11px] text-zinc-500">
           <span>Active City</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span className={`w-1.5 h-1.5 rounded-full ${currentCity ? 'bg-emerald-500' : 'bg-amber-500'}`} />
         </div>
         <p className="text-xs font-semibold text-zinc-900 truncate">
-          {currentCity.cityName}
+          {currentCity ? currentCity.cityName : 'Selected Municipality'}
         </p>
         <p className="text-[10px] text-zinc-400">
-          {currentCity.totalWards} Wards • FY 2026-27
+          {currentCity ? `${currentCity.totalWards} Wards • FY 2026-27` : 'Location Analysis'}
         </p>
       </div>
     </aside>

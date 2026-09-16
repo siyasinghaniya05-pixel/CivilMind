@@ -46,7 +46,7 @@ export const Navbar: React.FC<{ onOpenNewProjectModal: () => void }> = () => {
             title="Click to Switch City"
           >
             <MapPin className="w-3.5 h-3.5 text-blue-600" />
-            <span>{currentCity.cityName}, {currentCity.state}</span>
+            <span>{currentCity ? `${currentCity.cityName}, ${currentCity.state}` : 'Selected Municipality'}</span>
             <ChevronDown className="w-3 h-3 text-zinc-400 ml-0.5" />
           </button>
         </div>

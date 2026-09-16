@@ -20,10 +20,33 @@ import {
 import confetti from 'canvas-confetti';
 
 export const AnnualDevelopmentPlan: React.FC = () => {
-  const { currentCity, setActiveTab } = useCivic();
+  const { currentCity, setActiveTab, setCurrentView } = useCivic();
 
   const [planHorizon, setPlanHorizon] = useState<'1yr' | '3yr' | '5yr'>('1yr');
   const [isExported, setIsExported] = useState(false);
+
+  if (!currentCity) {
+    return (
+      <div className="min-h-[55vh] flex flex-col items-center justify-center text-center p-8 bg-white rounded-3xl border border-zinc-200/80 shadow-xs max-w-lg mx-auto my-12 space-y-5">
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <CalendarRange className="w-7 h-7" />
+        </div>
+        <div className="space-y-1.5">
+          <h2 className="text-2xl font-black text-zinc-950">Select Your Municipality</h2>
+          <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
+            Annual Development Plans are synthesized dynamically for any selected city or town. Please select a municipality to initialize the capital roadmap.
+          </p>
+        </div>
+        <button
+          onClick={() => setCurrentView('location-setup')}
+          className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs flex items-center gap-2 transition-all"
+        >
+          <Compass className="w-4 h-4" />
+          <span>Select Location</span>
+        </button>
+      </div>
+    );
+  }
 
   // 1-Year Plan (4 Quarters)
   const oneYearPlan = [

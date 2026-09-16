@@ -133,7 +133,7 @@ export const CitySelectorModal: React.FC<CitySelectorModalProps> = ({ isOpen, on
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Type ANY Indian city/town name (e.g. Kalamb, Jejuri, Wardha, Solapur, Baramati)..."
+              placeholder="Type ANY Indian city, town, Nagar Parishad, or Nagar Panchayat name..."
               className="w-full pl-11 pr-28 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium"
             />
             <button
@@ -174,23 +174,33 @@ export const CitySelectorModal: React.FC<CitySelectorModalProps> = ({ isOpen, on
         {/* Currently Active City Banner */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-900/10 via-indigo-900/5 to-emerald-900/10 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <div className={`w-3 h-3 rounded-full ${currentCity ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
             <div>
               <span className="text-[10px] text-slate-500 font-bold uppercase block">Currently Active Location</span>
-              <strong className="text-sm text-slate-900 dark:text-white">
-                {currentCity.cityName} {currentCity.ulbType}
-              </strong>
-              <span className="text-xs text-slate-500 ml-1">
-                ({currentCity.district}, {currentCity.state})
-              </span>
+              {currentCity ? (
+                <>
+                  <strong className="text-sm text-slate-900 dark:text-white">
+                    {currentCity.cityName} {currentCity.ulbType}
+                  </strong>
+                  <span className="text-xs text-slate-500 ml-1">
+                    ({currentCity.district}, {currentCity.state})
+                  </span>
+                </>
+              ) : (
+                <strong className="text-sm text-slate-500 dark:text-slate-400">
+                  No Location Selected (Using Global Mode)
+                </strong>
+              )}
             </div>
           </div>
-          <div className="text-right text-xs">
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">
-              Score: {currentCity.developmentScore}/100
-            </span>
-            <p className="text-[10px] text-slate-500">{currentCity.totalWards} Wards</p>
-          </div>
+          {currentCity && (
+            <div className="text-right text-xs">
+              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                Score: {currentCity.developmentScore}/100
+              </span>
+              <p className="text-[10px] text-slate-500">{currentCity.totalWards} Wards</p>
+            </div>
+          )}
         </div>
 
         {/* Pre-Indexed Benchmark Nagar Parishads & Councils */}
@@ -202,7 +212,7 @@ export const CitySelectorModal: React.FC<CitySelectorModalProps> = ({ isOpen, on
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {filteredCities.map((city) => {
-              const isCurrent = currentCity.id === city.id;
+              const isCurrent = currentCity?.id === city.id;
 
               return (
                 <div
