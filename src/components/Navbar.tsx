@@ -16,7 +16,13 @@ export const Navbar: React.FC<{ onOpenNewProjectModal: () => void }> = () => {
   const [profileOpen, setProfileOpen] = React.useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-zinc-200">
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-zinc-200 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+      {/* Sovereign National Micro-Accent Strip */}
+      <div className="h-1 flex w-full">
+        <div className="h-full flex-1 bg-[#FF9933]" />
+        <div className="h-full flex-1 bg-[#FFFFFF] border-y border-zinc-200/40" />
+        <div className="h-full flex-1 bg-[#138808]" />
+      </div>
       <div className="flex h-14 items-center justify-between px-4 lg:px-8 max-w-[1600px] mx-auto">
         {/* Left: Modern Logo & City Selector */}
         <div className="flex items-center gap-6">
